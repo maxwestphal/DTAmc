@@ -19,11 +19,14 @@ sample_data <- function(n = 200,
                         method = "roc",
                         pars = list(),
                         ...) {
+  # if(is.character(prev)){
+  #   prev <- as.numeric(strsplit(prev, "_"))
+  # }
   ## sample subgroup sizes
   ng <- sample_ng(n = n, prev = prev, random = random)
   ## sample binary data
-  pars <- c(list(n=ng, m=m), pars, list(...))
-  do.call(paste0("sample_data_", method), pars)
+  args <- c(list(ng=ng, m=m), pars, list(...))
+  do.call(paste0("sample_data_", method), args)
 }
 
 sample_ng <- function(n, prev, random = FALSE) {
@@ -38,34 +41,37 @@ sample_ng <- function(n, prev, random = FALSE) {
   return(ng)
 }
 
-sample_data_lfc <- function(theta) {
+sample_data_lfc <- function(ng = c(100, 300),
+                            m = 10,
+                            theta) {
+  # TODO: use SEPM.LFC function
   return(NULL)
 }
 
-sample_data_roc <- function(n = c(100, 300),
+sample_data_roc <- function(ng = c(100, 300),
                             m = 10,
-                            r = 3,
-                            auc = seq(0.85, 0.95, length.out = r),
+                            auc = seq(0.85, 0.95, length.out = 5),
                             rho = c(0.25, 0.25),
                             delta = 0,
-                            e = 1,
+                            e = 10,
                             k = 100,
                             corrplot = FALSE,
                             ...) {
   ## argument checks:
-  stopifnot(length(n) == 2)
-  stopifnot(length(auc) == r)
+  stopifnot(length(ng) == 2)
+  #stopifnot(length(auc) == r)
   
-  G <- length(n)
+  r <- length(auc)
+  G <- length(ng)
   ## mean vector (diseased: 1, healthy: 2):
   mu1 <- sqrt(2) * qnorm(auc)
   mu2 <- rep(0, r)
   ## covariance Matrix:
-  C1 <- matrix(rho[1], r, r) + diag(rep(1 - rho[1], r))
-  C2 <- matrix(rho[2], r, r) + diag(rep(1 - rho[2], r))
+  C1 <- matrix(rho[1], r, r) + diag(1-rho[1], nrow=r, ncol=r)
+  C2 <- matrix(rho[2], r, r) + diag(1-rho[2], nrow=r, ncol=r)
   ## subgroup samples:
-  S1 <- mvtnorm::rmvnorm(n[1], mu1, C1)
-  S2 <- mvtnorm::rmvnorm(n[2], mu2, C2)
+  S1 <- mvtnorm::rmvnorm(ng[1], mu1, C1)
+  S2 <- mvtnorm::rmvnorm(ng[2], mu2, C2)
   ## cutoffs:
   q <- quantile(rbind(S1, S2), c(0.05, 0.95))
   cu <- seq(q[1], q[2], length.out = k)

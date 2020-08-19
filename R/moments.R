@@ -47,8 +47,6 @@ cov2se <- function(cov){
   sqrt(cov2var(cov))
 }
 
-
-
 # data_moments2 <- function(d){
 #   M <- matrix(NA, ncol(d), ncol(d))
 #   for(j1 in 1:ncol(d)){

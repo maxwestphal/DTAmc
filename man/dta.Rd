@@ -4,15 +4,17 @@
 \alias{dta}
 \title{dta}
 \usage{
-dta(data = sample_data(), method, pars = list(), ...)
+dta(
+  data = sample_data(),
+  test = c("univariate", "bonferroni", "maxt", "bootstrap"),
+  alpha = 0.05,
+  alternative = c("two.sided", "less", "greater"),
+  regu = FALSE,
+  pars = list(),
+  ...
+)
 }
 \arguments{
-\item{data}{}
-
-\item{method}{}
-
-\item{pars}{}
-
 \item{...}{}
 }
 \value{

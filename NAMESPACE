@@ -2,3 +2,5 @@
 
 export(dta)
 export(sample_data)
+importFrom(magrittr,"%>%")
+importFrom(mvtnorm,qmvnorm)

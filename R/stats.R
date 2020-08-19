@@ -1,7 +1,7 @@
 # in: data in list format and further args
 # out: stats = list(est, cov)
 
-data2stats <- function(data, regu=FALSE, covariance=FALSE){
+data2stats <- function(data, regu=FALSE, covariance=TRUE){
   regu <- preproc_regu(regu)
   ## case 1: no regularisation
   if(regu[1] == 0){
