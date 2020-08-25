@@ -26,7 +26,7 @@ data2stats <- function(data, regu=FALSE, covariance=TRUE){
     sigma <- lapply(mom, mom2cov)
     se <- lapply(sigma, cov2se)
   }
-  return(list(est=est, se=se, sigma=sigma))
+  return(list(est=est, se=se, sigma=sigma, n=sapply(data, nrow)))
 }
 
 preproc_regu <- function(regu="2_1_0.5"){

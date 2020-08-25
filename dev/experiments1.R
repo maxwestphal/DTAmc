@@ -41,3 +41,25 @@ mom2cov(data_moments(d)) == cov(d)
 
 ?dta
 dta(data, method="maxt")
+
+
+
+
+require(mvtnorm)
+?rmvnorm
+cutoff <- list(0.5)
+marker <- rmvnorm(10, mean=rep(0, 5))
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2,24 +2,50 @@
 % Please edit documentation in R/dta.R
 \name{dta}
 \alias{dta}
-\title{dta}
+\title{Diagnostic test accuracy analysis}
 \usage{
 dta(
   data = sample_data(),
-  test = c("univariate", "bonferroni", "maxt", "bootstrap"),
+  group = NULL,
+  comparator = 0.5,
+  adjustment = c("none", "bonferroni", "maxt", "bootstrap"),
   alpha = 0.05,
   alternative = c("two.sided", "less", "greater"),
+  transformation = c("none", "logit"),
   regu = FALSE,
   pars = list(),
   ...
 )
 }
 \arguments{
+\item{data}{nxm binary matrix or data.frame, i.e. with values 0 and 1 (n observations of m binary decisions).
+Alternatively, data can be a list of such arrays (all with n columns) defining different subsamples.}
+
+\item{group}{integer vector (default: NULL) of length n with G distinct values, usually 1:G.
+Defines subsamples of data. Not needed if data is given as a list.}
+
+\item{comparator}{numeric vector}
+
+\item{adjustment}{character, specify type of statistical adjustment taken to adress multiplicity}
+
+\item{alpha}{numeric (default: 0.05), in unit interval}
+
+\item{alternative}{character, specify alternative hypothesis}
+
+\item{transformation}{character, define transformation to ensure results
+(e.g. point estimates, confidence limits) lie in unit interval}
+
+\item{regu}{numeric vector of length 3, specify type of shrinkage. TODO: DETAILS
+Alternatively, logical of length one (TRUE := c(2, 1, 1/2), FALSE := c(0, 0, 0))}
+
+\item{pars}{further parameters given as named list}
+
 \item{...}{}
 }
 \value{
-
+data.frame with analysis results
 }
 \description{
-dta
+Assess classification accuracy stratified by subpopulation, in the simplest case
+diseased and healthy individuals.
 }

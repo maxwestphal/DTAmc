@@ -1,7 +1,7 @@
 #' sample_data
 #'
-#' @param n
-#' @param m
+#' @param n overall sample size
+#' @param m number of models
 #' @param prev
 #' @param random
 #' @param method

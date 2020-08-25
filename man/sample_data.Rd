@@ -15,6 +15,10 @@ sample_data(
 )
 }
 \arguments{
+\item{n}{overall sample size}
+
+\item{m}{number of models}
+
 \item{...}{}
 }
 \value{

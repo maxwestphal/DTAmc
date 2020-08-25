@@ -28,3 +28,21 @@ argmax <- function(x) {
 #   return(R)
 # }
 
+
+
+
+# df2list <- function(df, group){
+#   lapply(unique(group), function(g) as.data.frame(df)[group==g, ])
+# }
+
+
+comp_preproc <- function(comp, data){
+  # TODO checks
+  if(length(comp) == 1){
+    comp <- rep(comp, ncol(data[[1]]))
+  }
+  return(comp) # TODO: implemented comp integer kess
+  # TODO: return data? stats? adoptoted?
+}
+
+
