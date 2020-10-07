@@ -3,6 +3,7 @@
 export("%>%")
 export(dta)
 export(sample_data)
+export(sample_data_roc)
 export(threshold)
 importFrom(magrittr,"%>%")
 importFrom(mvtnorm,qmvnorm)

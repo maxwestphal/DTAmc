@@ -1,3 +1,5 @@
+id <- function(x, ...){x}
+
 get_tf <- function(transformation = c("none", "logit")){
   tf <- list()
   if(transformation == "none"){
@@ -14,7 +16,7 @@ get_tf <- function(transformation = c("none", "logit")){
   return(tf)
 }
 
-id <- function(x, ...){x}
+
 
 
 

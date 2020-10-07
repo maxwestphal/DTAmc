@@ -5,7 +5,7 @@
 \title{Diagnostic test accuracy analysis}
 \usage{
 dta(
-  data = sample_data(),
+  data = sample_data(seed = 1337),
   group = NULL,
   comparator = 0.5,
   adjustment = c("none", "bonferroni", "maxt", "bootstrap"),

@@ -10,6 +10,7 @@ sample_data(
   prev = c(0.5, 0.5),
   random = FALSE,
   method = "roc",
+  seed = NULL,
   pars = list(),
   ...
 )

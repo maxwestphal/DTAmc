@@ -22,7 +22,7 @@
 #' @export
 #'
 #' @examples
-dta <- function(data = sample_data(),
+dta <- function(data = sample_data(seed=1337),
                 group = NULL,
                 comparator = 0.5,
                 adjustment = c("none", "bonferroni", "maxt", "bootstrap"),
@@ -46,7 +46,7 @@ dta <- function(data = sample_data(),
     none = cv_uni(alpha, alternative),
     bonferroni = cv_uni(alpha / length(stats$est[[1]]), alternative),
     maxt = cv_maxt(stats, alpha, alternative),
-    bootstrap = stop("bootstap not yet implemented")
+    bootstrap = NA
   )
   
   cov_needed <- c("maxt")
@@ -67,8 +67,8 @@ dta <- function(data = sample_data(),
       list(...),
       pars
     )
-  #do.call(paste0("dta_", match.arg(adjustment)), args)
-  return(do.call(stats2results, args))
+  return(do.call(paste0("dta_", match.arg(adjustment)), args))
+  #return(do.call(stats2results, args))
 }
 
 stats2results <- function(stats, cv, comp, alt, tf, ...) {
@@ -98,10 +98,50 @@ stat2result <- function(est, se, n, cv, comp, alt, tf, g = "") {
       lower = tf$inv(est.t + cv[1] * se.t), 
       upper = tf$inv(est.t + cv[2] * se.t),
       comparator = comp,
-      pvalue = ifelse(alt=="two.sided", 2, 1) * pnorm(tstat, lower.tail=FALSE) 
+      pvalue = pval(tstat, alt, adjustment="none") # TODO: adjustment
     )
   colnames(result) <- paste0(colnames(result), g)
   return(result)
+}
+
+dta_none <- function(stats, cv, comp, alt, tf, ...) {
+  return(stats2results(stats, cv, comp, alt, tf))
+}
+
+dta_bonferroni <- function(stats, cv, comp, alt, tf, ...) {
+  return(stats2results(stats, cv, comp, alt, tf))
+}
+
+dta_maxt <- function(stats, cv, comp, alt, tf, ..., useSEPM=F) {
+
+  if(useSEPM){
+    #TODO: remove old version and ARGUMENT
+    require(SEPM)
+    define_hypothesis("accuracy.cp", threshold = comp) %>%
+      compare(comparison = data) %>%
+      estimate(method = "beta.approx") %>%
+      infer(method = "maxT") %>%
+      summary() %>%
+      return()
+  }
+  
+  return(stats2results(stats, cv, comp, alt, tf))
+}
+
+dta_bootstrap <- function(data,
+                          alpha = 0.05,
+                          alternative = c("two.sided", "less", "greater"),
+                          ...) {
+  ## prob: data needed as arg
+  stop("method bootstrap not yet implemented")
+}
+
+dta_mbeta <- function(data,
+                      alpha = 0.05,
+                      alternative = c("two.sided", "less", "greater"),
+                      ...) {
+  ## prob: data needed as arg
+  stop("method mbeta not yet implemented")
 }
 
 
@@ -118,51 +158,3 @@ stat2result <- function(est, se, n, cv, comp, alt, tf, g = "") {
 #                    upper = est.t + cv*se.t)
 # CI <- as.data.frame(do.call(t$inv, list(CI.t)))
 
-
-
-# dta_none <- function(stats,
-#                      alpha = 0.05,
-#                      alternative = c("two.sided", "less", "greater"),
-#                      comp, alt, tf, ...) {
-#   cv <- cv_uni(alpha, alternative)
-#   return(stats2results(stats, cv, comp, alt, tf))
-# }
-# 
-# dta_bonferroni <- function(stats,
-#                            alpha = 0.05,
-#                            alternative = c("two.sided", "less", "greater"),
-#                            ...) {
-#   cv <- cv_uni(alpha / length(stats$est[[1]]), alternative)
-#   return(stats2results(stats, cv, comp, alt, tf))
-# }
-# 
-# dta_maxt <- function(stats,
-#                      alpha = 0.05,
-#                      alternative = c("two.sided", "less", "greater"),
-#                      useSEPM=F,
-#                      ...) {
-#   
-#   if(useSEPM){
-#     #TODO: remove old version and ARGUMENT
-#     require(SEPM)
-#     define_hypothesis("accuracy.cp", threshold = c(0.5, 0.5)) %>%
-#       compare(comparison = data) %>%
-#       estimate(method = "beta.approx") %>%
-#       infer(method = "maxT") %>%
-#       summary() %>%
-#       return()
-#   }
-#   
-#   cv <- cv_maxt(stats, alpha, alternative)
-#   return(stats2results(stats, cv, comp, alt, tf))
-#   
-#   
-# }
-# 
-# dta_boostrap <- function(stats,
-#                          alpha = 0.05,
-#                          alternative = c("two.sided", "less", "greater"),
-#                          ...) {
-#   ## prob: data needed as arg
-#   stop("Bootstrap not yet implemented")
-# }

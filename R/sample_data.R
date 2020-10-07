@@ -17,11 +17,13 @@ sample_data <- function(n = 200,
                         prev = c(0.5, 0.5),
                         random = FALSE,
                         method = "roc",
+                        seed = NULL,
                         pars = list(),
                         ...) {
   # if(is.character(prev)){
   #   prev <- as.numeric(strsplit(prev, "_"))
   # }
+  set.seed(seed)
   ## sample subgroup sizes
   ng <- sample_ng(n = n, prev = prev, random = random)
   ## sample binary data
@@ -32,11 +34,14 @@ sample_data <- function(n = 200,
 sample_ng <- function(n, prev, random = FALSE) {
   stopifnot(all(prev >= 0))
   prev <- prev / sum(prev)
-  if (random) {
-    ng <- as.numeric(extraDistr::rmnom(n = 1, size = n, prob = prev))
-  } else{
-    ng <- round(n * prev, 0)
-    ng[1] <- n - sum(ng[-1])
+  ng <- rep(0, length(prev))
+  while(any(ng == 0)){
+    if (random) {
+      ng <- as.numeric(extraDistr::rmnom(n = 1, size = n, prob = prev))
+    } else{
+      ng <- round(n * prev, 0)
+      ng[1] <- n - sum(ng[-1])
+    }
   }
   return(ng)
 }
@@ -48,6 +53,22 @@ sample_data_lfc <- function(ng = c(100, 300),
   return(NULL)
 }
 
+#' Title
+#'
+#' @param ng 
+#' @param m 
+#' @param auc 
+#' @param rho 
+#' @param delta 
+#' @param e 
+#' @param k 
+#' @param corrplot 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 sample_data_roc <- function(ng = c(100, 300),
                             m = 10,
                             auc = seq(0.85, 0.95, length.out = 5),
