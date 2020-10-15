@@ -17,21 +17,22 @@
 #'
 #' @examples
 #' set.seed(123)
-#' M <- as.data.frame(mvtnorm::rmvnorm(20, mean=rep(0, 3), sigma=2*diag(4)))
+#' M <- as.data.frame(mvtnorm::rmvnorm(20, mean=rep(0, 3), sigma=2*diag(3)))
 #' M
 #' threshold(M)
 #' C <- matrix(rep(c(-1, 0, 1, -2, 0, 2), 3), ncol=3, byrow = TRUE)
 #' C
 #' w <- c(1, 1, 2, 2, 3, 3)
 #' threshold(M, C, w)
-threshold <- function(markers, cutpoints=0, map=1:ncol(markers)){
+threshold <- function(markers, cutpoints=rep(0, ncol(markers)), map=1:ncol(markers)){
   stopifnot(is.matrix(cutpoints) | is.numeric(cutpoints))
   cutpoints <- as.matrix(cutpoints)
-  if(ncol(cutpoints) == 1){
-    cutpoints <- do.call(rbind, lapply(1:ncol(markers), function(k) cutpoints))
-  }
+  ## TODO: why needed??
+  # if(ncol(cutpoints) == 1){
+  #   cutpoints <- do.call(cbind, lapply(1:ncol(markers), function(k) cutpoints))
+  # }
   if(!all(apply(cutpoints, 1, function(x) length(x) == length(unique(x))))){
-    stop("Marker split cannot be based on dplicate cutpoints.")
+    stop("Marker split cannot be based on duplicate cutpoints.")
   }
   stopifnot(all(map %in% 1:ncol(markers)))
   stopifnot(length(map) == nrow(cutpoints))

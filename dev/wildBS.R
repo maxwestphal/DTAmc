@@ -23,6 +23,28 @@ ki <- function(est,quant,V){
   ki_l=exp(term_l)/(1+exp(term_l)) # backtransformation of lower CI
   return(ki_l)
 }
+##### ADDED
+data <- readr::read_csv2(normalizePath("C:\\Users\\maxwe\\Documents\\R\\PUBLIC\\131022 Daten Ballmann reduziert.csv", "\\"))
+data
+?normalizePath
+d <- 5
+n0 <- 80
+n1 <- 20
+N <- n0 + n1
+status <- NA
+tag.healthy <- 0
+#data <- NA
+datatype <- "Example"
+datatype <- "Simulated"
+alpha <- 0.05
+minAUC <- NA
+minSE <- 0.9
+minSP <- 0.8
+
+?optimal.cutpoints
+?control.cutpoints
+
+##### ADDED END
 Calc_CI <- function(d,n0,n1,N,status,tag.healthy,data,datatype,alpha,minAUC,minSE,minSP){
   # Results memory----------------------------------------------------------#
   if(datatype == "Example") {

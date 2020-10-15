@@ -40,25 +40,29 @@ dta <- function(data = sample_data(seed=1337),
   
   adjustment <- match.arg(adjustment)
   alternative <- match.arg(alternative)
+  regu <- preproc_regu(regu)
+  
+  cov_needed <- c("maxt")
+  stats <- data2stats(data, regu = regu,
+                      covariance = adjustment %in% cov_needed)
   
   cv <- switch(
     adjustment,
     none = cv_uni(alpha, alternative),
     bonferroni = cv_uni(alpha / length(stats$est[[1]]), alternative),
     maxt = cv_maxt(stats, alpha, alternative),
-    bootstrap = NA
+    bootstrap = cv_bootstrap(stats, alpha, alternative, data, 
+                             nboot = ifelse(is.null(pars$nboot), 10000, pars$nboot),
+                             regu = regu)
   )
   
-  cov_needed <- c("maxt")
+  message("Critical value: ", round(cv[1], 2), " | ", round(cv[2], 2))
+  
   args <-
     c(
       list(
         data = data,
-        stats = data2stats(
-          data,
-          regu = regu,
-          covariance = match.arg(adjustment) %in% cov_needed
-        ),
+        stats = stats,
         cv = cv, 
         comp = comp_preproc(comparator, data),
         alt = match.arg(alternative),
@@ -67,8 +71,9 @@ dta <- function(data = sample_data(seed=1337),
       list(...),
       pars
     )
-  return(do.call(paste0("dta_", match.arg(adjustment)), args))
-  #return(do.call(stats2results, args))
+  
+  warning("p values not correct!")
+  return(as.data.frame(do.call(paste0("dta_", match.arg(adjustment)), args)))
 }
 
 stats2results <- function(stats, cv, comp, alt, tf, ...) {
@@ -128,12 +133,8 @@ dta_maxt <- function(stats, cv, comp, alt, tf, ..., useSEPM=F) {
   return(stats2results(stats, cv, comp, alt, tf))
 }
 
-dta_bootstrap <- function(data,
-                          alpha = 0.05,
-                          alternative = c("two.sided", "less", "greater"),
-                          ...) {
-  ## prob: data needed as arg
-  stop("method bootstrap not yet implemented")
+dta_bootstrap <- function(stats, cv, comp, alt, tf, ...) {
+  return(stats2results(stats, cv, comp, alt, tf))
 }
 
 dta_mbeta <- function(data,

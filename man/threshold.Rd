@@ -4,7 +4,7 @@
 \alias{threshold}
 \title{Threshold continuous (bio)markers}
 \usage{
-threshold(markers, cutpoints = 0, map = 1:ncol(markers))
+threshold(markers, cutpoints = rep(0, ncol(markers)), map = 1:ncol(markers))
 }
 \arguments{
 \item{markers}{numeric matrix of continuous (bio)markers to be thresholded.
@@ -27,7 +27,7 @@ by specifying one or more cutpoints.
 }
 \examples{
 set.seed(123)
-M <- as.data.frame(mvtnorm::rmvnorm(20, mean=rep(0, 3), sigma=2*diag(4)))
+M <- as.data.frame(mvtnorm::rmvnorm(20, mean=rep(0, 3), sigma=2*diag(3)))
 M
 threshold(M)
 C <- matrix(rep(c(-1, 0, 1, -2, 0, 2), 3), ncol=3, byrow = TRUE)
