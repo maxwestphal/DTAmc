@@ -16,7 +16,7 @@ cutoffs is a single column matrix whereby is row defines a binary split (<=t vs.
 In this case (K=1), cutoffs can also be a numeric vector.}
 
 \item{map}{integer vector of length L with values in 1:r, whereby r = ncol(markers).
-map\link{l} gives the value which column of markers should be tresholded by ...}
+map_l gives the value which column of markers should be tresholded by ...}
 }
 \value{
 numeric (n x L) matrix with categorical outcomes after thresholding
