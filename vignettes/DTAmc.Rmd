@@ -1,0 +1,129 @@
+---
+title: "DTAmc"
+author: "Max Westphal"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{DTAmc-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(DTAmc)
+```
+
+Scope: illustrating code examples for DTAmc package
+
+## Motivating example
+```{r example1}
+# real data example from publication here
+123
+```
+
+
+## Important functions
+
+### threshold()
+Often, binary predictions are not readily available but rather need to be 
+derived from continuous (risk) scores. This can be done via the threshold
+function.
+
+```{r threshold1}
+# real data example from publication here
+set.seed(123)
+M <- as.data.frame(mvtnorm::rmvnorm(10, mean=rep(0, 3), sigma=2*diag(3)))
+M
+
+## threshold at 0 by default
+yhat <- threshold(M)
+yhat
+
+## define multiple cutpoints to define multiple decision rules per marker
+C <- c(0, 1, 0, 1, 0, 1)
+a <- c(1, 1, 2, 2, 3, 3)
+threshold(M, C, a)
+
+
+## this can even be used to do multi-class classification, like this:
+C <- matrix(rep(c(-1, 0, 1, -2, 0, 2), 3), ncol=3, byrow = TRUE)
+C
+threshold(M, C, a)
+```
+
+
+### compare()
+In supervised classification, it is assumed that we have a true set of labels.
+In medical testing, this is usually called the reference standard provided by
+an established diagnostic/prognostic tool.
+We need to compare model predictions against these labels in order to compute 
+model accuracy. 
+
+```{r compare1}
+## consider binary prediction from 3 models from previous r chunk
+names(yhat) <- paste0("rule", 1:ncol(yhat))
+yhat
+
+## assume true labels
+y <- c(rep(1, 5), rep(0, 5))
+
+## compare then results in 
+compare(yhat, y)
+```
+
+
+
+### dta()
+Main function of the package
+
+```{r dta1}
+#dta(compare(yhat, y))
+```
+
+More details on the dta function are provided in the last section
+
+### sample_data()
+Illustration of functions for synthetic data generation
+Short explanation, details in paper
+
+```{r sample_data1}
+sample_data_lfc(n=20)
+```
+
+
+```{r sample_data2}
+sample_data_roc(n=20)
+```
+
+Remark: Synthetic data comes at the 'compared' level meaning the labels 1 and 0
+indicate correct and false predictions respectively.
+
+## Common workflows
+
+The pipe operator
+
+```{r workflow1}
+NA
+```
+
+
+## dta function details
+detailed explanations of function arguments
+
+- 
+
+
+## References
+
+1. PAPER
+
+## TODO
+# section numbers

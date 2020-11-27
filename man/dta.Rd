@@ -6,11 +6,11 @@
 \usage{
 dta(
   data = sample_data(seed = 1337),
-  group = NULL,
-  comparator = 0.5,
-  adjustment = c("none", "bonferroni", "maxt", "bootstrap"),
+  comparator = NULL,
+  benchmark = 0.5,
   alpha = 0.05,
-  alternative = c("two.sided", "less", "greater"),
+  alternative = c("greater", "two.sided", "less"),
+  adjustment = c("none", "bonferroni", "maxt", "bootstrap"),
   transformation = c("none", "logit"),
   regu = FALSE,
   pars = list(),
@@ -18,19 +18,20 @@ dta(
 )
 }
 \arguments{
-\item{data}{nxm binary matrix or data.frame, i.e. with values 0 and 1 (n observations of m binary decisions).
-Alternatively, data can be a list of such arrays (all with n columns) defining different subsamples.}
-
-\item{group}{integer vector (default: NULL) of length n with G distinct values, usually 1:G.
-Defines subsamples of data. Not needed if data is given as a list.}
+\item{data}{nxm binary matrix or data.frame (n observations of m binary decisions).
+Data should have values 0 (incorrect prediction) or 1 (correct prediction).
+\link{compare} provides a simple way to match predictions against true labels.
+Alternatively, data can be a list of such arrays (all with m columns) defining different subsamples.}
 
 \item{comparator}{numeric vector}
 
-\item{adjustment}{character, specify type of statistical adjustment taken to adress multiplicity}
+\item{benchmark}{value to compare against (RHS)}
 
 \item{alpha}{numeric (default: 0.05), in unit interval}
 
 \item{alternative}{character, specify alternative hypothesis}
+
+\item{adjustment}{character, specify type of statistical adjustment taken to address multiplicity}
 
 \item{transformation}{character, define transformation to ensure results
 (e.g. point estimates, confidence limits) lie in unit interval}
@@ -40,10 +41,10 @@ Alternatively, logical of length one (TRUE := c(2, 1, 1/2), FALSE := c(0, 0, 0))
 
 \item{pars}{further parameters given as named list}
 
-\item{...}{}
+\item{...}{additional named parameters}
 }
 \value{
-data.frame with analysis results
+DTAmcResults object, which is a list of analysis results
 }
 \description{
 Assess classification accuracy stratified by subpopulation, in the simplest case

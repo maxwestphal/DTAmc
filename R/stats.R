@@ -1,50 +1,56 @@
-# in: data in list format and further args
-# out: stats = list(est, cov)
-
-data2stats <- function(data, regu=FALSE, covariance=TRUE){
-
-  ## case 1: no regularisation
-  if(regu[1] == 0){
-    est <- lapply(data, dat2est)
-    if(covariance){
-      sigma <- lapply(data, dat2cov)
-      se <- lapply(sigma, cov2se)
-    }
-    if(!covariance){
-      sigma <- NULL
-      se <- lapply(data, dat2se)
-    }
-  }
-  ## case 2: enabled regularisation
-  ## TODO: simpify covariance = FALSE case
-  if(regu[1] > 0){
-    mom <- lapply(data, function(d){
-      add_moments(prior_moments(ncol(d), regu),
-                  data_moments(d))
-    })
-    est <- lapply(mom, mom2est)
-    sigma <- lapply(mom, mom2cov)
-    se <- lapply(sigma, cov2se)
-  }
-  return(list(est=est, se=se, sigma=sigma, n=sapply(data, nrow)))
+data2stats <- function(data, regu=c(0,0,0)){
+  lapply(data, dat2stats, regu=regu)
 }
 
-preproc_regu <- function(regu="2_1_0.5"){
-  if(is.logical(regu)){
-    if(!regu){
-      return(c(0,0,0))
-    }
-    if(regu){
-      return(c(2,1,1/2))
-    }
-  }
-  if(is.character(regu)){
-    regu <- as.numeric(strsplit(regu, "_")[[1]])
-  }
-  stopifnot(is.numeric(regu))
-  stopifnot(length(regu)==3)
-  stopifnot(all(regu >= 0))
-  return(regu)
+dat2stats <- function(dat, regu=c(0,0,0)){
+  mom <- add_moments(prior_moments(ncol(dat), regu),
+                     data_moments(dat))
+  sigma <- mom2cov(mom)
+  list(est = mom2est(mom), 
+       cov = sigma,
+       se = cov2se(sigma),
+       n = mom$n,
+       nraw = nrow(dat),
+       npseudo = regu[1])
 }
 
-#preproc_regu(regu=c(1,1,1, 1))
+## TODO: allow to NOT calc covariance matrix if not needed
+## TODO: REMOVE OLD VERSION
+# data2stats <- function(data, regu=c(0,0,0), covariance=TRUE){
+#   
+#   n <- sapply(data, nrow)
+#   
+#   ## case 1: no regularisation
+#   if(regu[1] == 0){
+#     est <- lapply(data, dat2est)
+#     if(covariance){
+#       sigma <- lapply(data, dat2cov)
+#       se <- lapply(sigma, cov2se)
+#     }
+#     if(!covariance){
+#       sigma <- NULL
+#       se <- lapply(data, dat2se)
+#     }
+#   }
+#   ## case 2: enabled regularisation
+#   ## TODO: simpify covariance = FALSE case
+#   if(regu[1] > 0){
+#     mom <- lapply(data, function(d){
+#       add_moments(prior_moments(ncol(d), regu),
+#                   data_moments(d))
+#     })
+#     est <- lapply(mom, mom2est)
+#     sigma <- lapply(mom, mom2cov)
+#     se <- lapply(sigma, cov2se)
+#   }
+#   
+#   
+#   out <- lapply(1:length(data), function(g){
+#     list(est = est[[g]],
+#          se = se[[g]],
+#          cov = sigma[[g]],
+#          n = n[g])
+#   })
+#   names(out) <- names(data)
+#   return(out)
+# }

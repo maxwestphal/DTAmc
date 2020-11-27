@@ -23,8 +23,9 @@ mom2cov <- function(mom){
   return((n*A - (a %*% t(a))) / (n^2) / (n+1))
 }
 
-dat2est <- function(dat){
-  colMeans(dat)
+dat2est <- function(dat, regu=c(0,0,0)){
+  n <- nrow(dat)
+  (colMeans(dat)*n + regu[2])/(n+regu[1])
 }
 
 dat2cov <- function(dat){

@@ -2,14 +2,14 @@
 % Please edit documentation in R/sample_data.R
 \name{sample_data}
 \alias{sample_data}
-\title{sample_data}
+\title{Sample binary data}
 \usage{
 sample_data(
   n = 200,
-  m = 10,
   prev = c(0.5, 0.5),
   random = FALSE,
-  method = "roc",
+  m = 10,
+  method = c("roc", "lfc", "prob"),
   seed = NULL,
   pars = list(),
   ...
@@ -18,13 +18,17 @@ sample_data(
 \arguments{
 \item{n}{overall sample size}
 
+\item{prev}{prevalence}
+
+\item{random}{random sampling (TRUE) or fixed group sample sizes}
+
 \item{m}{number of models}
 
-\item{...}{}
+\item{method}{}
 }
 \value{
 
 }
 \description{
-sample_data
+Sample binary data
 }

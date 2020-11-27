@@ -1,161 +1,272 @@
+## TODO: MEANING OF two.sided and less???
+## TODO: add step-down procedures
+# @param type either "single-step" (default) or "step-down" procedure,
+# if available for chosen adjustment.
+
+
+
 #' Diagnostic test accuracy analysis
 #' 
 #' Assess classification accuracy stratified by subpopulation, in the simplest case 
 #' diseased and healthy individuals.
 #'
-#' @param data nxm binary matrix or data.frame, i.e. with values 0 and 1 (n observations of m binary decisions). 
-#' Alternatively, data can be a list of such arrays (all with n columns) defining different subsamples.
-#' @param group integer vector (default: NULL) of length n with G distinct values, usually 1:G.
-#' Defines subsamples of data. Not needed if data is given as a list.
+#' @param data nxm binary matrix or data.frame (n observations of m binary decisions). 
+#' Data should have values 0 (incorrect prediction) or 1 (correct prediction). 
+#' \link{compare} provides a simple way to match predictions against true labels.
+#' Alternatively, data can be a list of such arrays (all with m columns) defining different subsamples.
 #' @param comparator numeric vector 
-#' @param adjustment character, specify type of statistical adjustment taken to adress multiplicity
-#' @param alpha numeric (default: 0.05), in unit interval 
+#' @param benchmark value to compare against (RHS)
+#' @param alpha numeric (default: 0.05), in unit interval
 #' @param alternative character, specify alternative hypothesis
+#' @param adjustment character, specify type of statistical adjustment taken to address multiplicity
 #' @param transformation character, define transformation to ensure results 
 #' (e.g. point estimates, confidence limits) lie in unit interval
 #' @param regu numeric vector of length 3, specify type of shrinkage. TODO: DETAILS
 #' Alternatively, logical of length one (TRUE := c(2, 1, 1/2), FALSE := c(0, 0, 0))
 #' @param pars further parameters given as named list
-#' @param ... 
+#' @param ... additional named parameters
 #'
-#' @return data.frame with analysis results
+#' @return DTAmcResults object, which is a list of analysis results
 #' @export
 #'
 #' @examples
 dta <- function(data = sample_data(seed=1337),
-                group = NULL,
-                comparator = 0.5,
-                adjustment = c("none", "bonferroni", "maxt", "bootstrap"),
+                comparator = NULL,
+                benchmark = 0.5,
                 alpha = 0.05,
-                alternative = c("two.sided", "less", "greater"),
+                alternative = c("greater", "two.sided", "less"), 
+                adjustment = c("none", "bonferroni", "maxt", "bootstrap"),
                 transformation = c("none", "logit"),
                 regu = FALSE,
                 pars = list(),
                 ...) {
-  
-  if (is.data.frame(data) | is.matrix(data)) {
-    stopifnot(!is.null(group) & length(group) == nrow(data))
-    data <- split(data, group)
+  ## preprocess & check arguments:
+  stopifnot(is.list(data))
+  stopifnot(all(sapply(data, class) %in% c("data.frame", "matrix")))
+  if(any(sapply(data, class) == "data.frame")){
+    data <- lapply(data, as.matrix)
   }
+  stopifnot(all(diff(sapply(data, ncol))==0))
+  if(!all(apply(sapply(data, colnames), 1, function(x) length(unique(x))==1 ))){
+    stop("Expecting identical column names!")
+  }
+  if(length(benchmark) == 1){
+    benchmark <- rep(benchmark, length(data))
+  }
+  stopifnot(all(abs(benchmark) < 1))
+  stopifnot(is.numeric(alpha))
+  stopifnot(alpha > 0 & alpha < 1)
+  stopifnot(is.list(pars))
   
-  adjustment <- match.arg(adjustment)
-  alternative <- match.arg(alternative)
-  regu <- preproc_regu(regu)
+  ## prepare arguments for specific dta_XYZ function:
+  args <-
+    list(
+      data = data,
+      comparator = preproc_comp(comparator, data),
+      benchmark = benchmark,
+      alpha = alpha,
+      alternative = match.arg(alternative),
+      transformation = match.arg(transformation),
+      regu = preproc_regu(regu),
+      pars = c(list(...), pars)
+    )
   
-  cov_needed <- c("maxt")
-  stats <- data2stats(data, regu = regu,
-                      covariance = adjustment %in% cov_needed)
+  ## calculate & label result
+  out <- do.call(paste0("dta_", match.arg(adjustment)), args)
+  names(out$results) <- names(data)
+  class(out) <- append(class(out), "DTAmcResults")
   
-  cv <- switch(
-    adjustment,
-    none = cv_uni(alpha, alternative),
-    bonferroni = cv_uni(alpha / length(stats$est[[1]]), alternative),
-    maxt = cv_maxt(stats, alpha, alternative),
-    bootstrap = cv_bootstrap(stats, alpha, alternative, data, 
-                             nboot = ifelse(is.null(pars$nboot), 10000, pars$nboot),
-                             regu = regu)
+  return(out)
+}
+
+dta_none <- function(data = sample_data(seed=1337),
+                     comparator = NULL,
+                     benchmark = 0.5,
+                     alpha = 0.05,
+                     alternative = "greater",
+                     transformation = "none",
+                     regu = FALSE,
+                     pars = list(),
+                     ...){  
+  
+  stats <- data2stats(data, regu = regu)
+  cv <- cv_uni(alpha, alternative)
+  
+  ## output
+  out <- list()
+  out$results <- stats2results(
+    stats=stats, cv=cv, pval_fun=pval_uni,
+    comparator, benchmark,  
+    alternative, transformation
   )
   
-  message("Critical value: ", round(cv[1], 2), " | ", round(cv[2], 2))
+  out$info <- list(n = sapply(stats, function(x) x$n), 
+                   m = ncol(data[[1]]),
+                   alpha = alpha,
+                   alpha_adj = alpha,
+                   cv = cv)
+  return(out)
+}
+
+dta_bonferroni <- function(data = sample_data(seed=1337),
+                           comparator = NULL,
+                           benchmark = 0.5,
+                           alpha = 0.05,
+                           alternative = "greater",
+                           transformation = "none",
+                           regu = FALSE,
+                           pars = list(),
+                           ...){
   
-  args <-
-    c(
-      list(
-        data = data,
-        stats = stats,
-        cv = cv, 
-        comp = comp_preproc(comparator, data),
-        alt = match.arg(alternative),
-        tf = get_tf(match.arg(transformation))
-      ),
-      list(...),
-      pars
-    )
+  m <- ncol(data[[1]])
   
-  warning("p values not correct!")
-  return(as.data.frame(do.call(paste0("dta_", match.arg(adjustment)), args)))
-}
-
-stats2results <- function(stats, cv, comp, alt, tf, ...) {
-  do.call(cbind,
-          lapply(1:length(stats$est), function(g) {
-            stat2result(
-              est = stats$est[[g]],
-              se = stats$se[[g]],
-              n = stats$n[g],
-              cv = cv,
-              comp = comp[g], # TODO:
-              alt = alt,
-              tf = tf,
-              g = g
-            )
-          }))
-}
-
-stat2result <- function(est, se, n, cv, comp, alt, tf, g = "") {
-  est.t <- tf$est_link(est)
-  comp.t <- tf$est_link(comp)
-  se.t <- tf$se_link(se, n, est)
-  tstat <- (est.t - comp.t)/se.t
-  result <-
-    cbind(
-      estimate = est,
-      lower = tf$inv(est.t + cv[1] * se.t), 
-      upper = tf$inv(est.t + cv[2] * se.t),
-      comparator = comp,
-      pvalue = pval(tstat, alt, adjustment="none") # TODO: adjustment
-    )
-  colnames(result) <- paste0(colnames(result), g)
-  return(result)
-}
-
-dta_none <- function(stats, cv, comp, alt, tf, ...) {
-  return(stats2results(stats, cv, comp, alt, tf))
-}
-
-dta_bonferroni <- function(stats, cv, comp, alt, tf, ...) {
-  return(stats2results(stats, cv, comp, alt, tf))
-}
-
-dta_maxt <- function(stats, cv, comp, alt, tf, ..., useSEPM=F) {
-
-  if(useSEPM){
-    #TODO: remove old version and ARGUMENT
-    require(SEPM)
-    define_hypothesis("accuracy.cp", threshold = comp) %>%
-      compare(comparison = data) %>%
-      estimate(method = "beta.approx") %>%
-      infer(method = "maxT") %>%
-      summary() %>%
-      return()
-  }
+  stats <- data2stats(data, regu = regu)
+  cv <- cv_bonferroni(m, alpha, alternative)
   
-  return(stats2results(stats, cv, comp, alt, tf))
+  ## output
+  out <- list()
+  out$results <- stats2results(
+    stats=stats, cv=cv, pval_fun=pval_bonferroni,
+    comparator, benchmark,  
+    alternative, transformation
+  )
+  
+  out$info <- list(n = sapply(stats, function(x) x$n), 
+                   m = m,
+                   alpha = alpha,
+                   alpha_adj = alpha/ncol(data[[1]]),
+                   cv = cv)
+  return(out)
 }
 
-dta_bootstrap <- function(stats, cv, comp, alt, tf, ...) {
-  return(stats2results(stats, cv, comp, alt, tf))
+dta_maxt <- function(data = sample_data(seed=1337),
+                     comparator = NULL,
+                     benchmark = 0.5,
+                     alpha = 0.05,
+                     alternative = "greater",
+                     transformation = "none",
+                     regu = FALSE,
+                     pars = list(),
+                     ...){
+  
+  stats <- data2stats(data, regu = regu)
+  R <- cov2cor(active_cov(stats))
+  cv <- cv_maxt(R, alpha, alternative)
+  
+  ## output
+  out <- list()
+  out$results <- stats2results(
+    stats=stats, cv=cv, pval_fun=pval_maxt(R),
+    comparator, benchmark,  
+    alternative, transformation
+  )
+  
+  out$info <- list(n = sapply(stats, function(x) x$n), 
+                   m = ncol(data[[1]]),
+                   alpha = alpha,
+                   alpha_adj = alpha_maxt(alpha, alternative, R),
+                   cv = cv)
+  return(out)
 }
 
-dta_mbeta <- function(data,
+#' @importFrom boot boot
+dta_bootstrap <- function(data = sample_data(seed=1337),
+                          comparator = NULL,
+                          benchmark = 0.5,
+                          alpha = 0.05,
+                          alternative = "greater",
+                          transformation = "none",
+                          regu = FALSE,
+                          pars = list(),
+                          ...){
+  
+  stats <- data2stats(data, regu = regu)
+  
+  ## TODO: write wrapper for boot sample 
+  nboot <- ifelse(is.null(pars$nboot), 2000, pars$nboot)
+  message(paste0("Drawing ", nboot, " bootstrap samples..."))
+  group <- unlist(sapply(1:length(data), function(g) rep(g, nrow(data[[g]]))))
+  bst <- boot::boot(do.call(rbind, data), statistic = maxMinT,
+                    R = nboot, strata=group, group=group, regu=regu)$t
+  
+  cv <- cv_bootstrap(alpha, alternative, bst)
+  
+  ## output
+  ## TODO: write function that preps output for all dta_XYZ
+  out <- list()
+  out$results <- stats2results(
+    stats=stats, cv=cv, pval_fun=pval_bootstrap(bst),
+    comparator, benchmark,  
+    alternative, transformation
+  )
+  
+  out$info <- list(n = sapply(stats, function(x) x$n), 
+                   m = ncol(data[[1]]),
+                   alpha = alpha,
+                   alpha_adj = alpha_bootstrap(alpha, alternative, bst),
+                   cv = cv)
+  
+  return(out)
+}
+
+dta_wildbs <- function(data = sample_data(seed=1337),
+                       comparator = NULL,
+                       benchmark = 0.5,
+                       alpha = 0.05,
+                       alternative = "greater",
+                       transformation = "none",
+                       regu = FALSE,
+                       pars = list(),
+                       ...){
+  ## TODO
+  stop("adjustment wildbs not yet implemented")
+}
+
+dta_mbeta <- function(data = sample_data(seed=1337),
+                      comparator = NULL,
+                      benchmark = 0.5,
                       alpha = 0.05,
-                      alternative = c("two.sided", "less", "greater"),
+                      alternative = "greater",
+                      transformation = "none",
+                      regu = FALSE,
+                      pars = list(),
                       ...) {
-  ## prob: data needed as arg
-  stop("method mbeta not yet implemented")
+  ## TODO
+  stop("adjustment mbeta not yet implemented")
 }
 
 
-# TODO: remove stuff
-# est.t <- do.call(t$link, list(est))
-# se.t <- do.call(t$se.t, list(se=se, n=e$n, estimate=est))
+## TODO:
+## one sided versus two sided tests/intervals - interpretation?
+ 
+## TODO: prob not needed?!?
+# dta_generic <- function(stats,
+#                         alpha_adj,
+#                         cv,
+#                         data,
+#                         comparator,
+#                         alpha,
+#                         alternative,
+#                         transformation,
+#                         regu,
+#                         pars = list(),
+#                         ...) {
+#   ## output
+#   out <- list()
+#   out$results <- stats2results(
+#     stats = stats,
+#     cv = cv,
+#     comp = comparator,
+#     alt = alternative,
+#     tf = get_tf(transformation)
+#   )
+#   
+#   out$info <- list(n = stats$n, 
+#                    m = length(stats$est[[1]]),
+#                    alpha = alpha,
+#                    alpha_adj = alpha,
+#                    cv = cv)
+#   
+#   return(out)
+# } 
 # 
-# 
-# 
-# sigma.t <- diag(se.t, length(se.t)) %*% R %*% diag(se.t, length(se.t))
-# 
-# CI.t <- data.frame(estimate = est.t,
-#                    lower = est.t - cv*se.t,
-#                    upper = est.t + cv*se.t)
-# CI <- as.data.frame(do.call(t$inv, list(CI.t)))
-
