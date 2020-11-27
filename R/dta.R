@@ -42,8 +42,9 @@ dta <- function(data = sample_data(seed=1337),
                 ...) {
   ## preprocess & check arguments:
   stopifnot(is.list(data))
-  stopifnot(all(sapply(data, class) %in% c("data.frame", "matrix")))
-  if(any(sapply(data, class) == "data.frame")){
+  stopifnot(all(sapply(data, function(x) 
+    any(class(x) %in% c("data.frame", "matrix")))))
+  if(any(sapply(data, function(x) any(class(x) == "data.frame")))){
     data <- lapply(data, as.matrix)
   }
   stopifnot(all(diff(sapply(data, ncol))==0))
