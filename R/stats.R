@@ -1,16 +1,21 @@
-data2stats <- function(data, regu=c(0,0,0)){
+data2stats <- function(data, regu=c(0,0,0), se_raw = FALSE){
   lapply(data, dat2stats, regu=regu)
 }
 
-dat2stats <- function(dat, regu=c(0,0,0)){
+dat2stats <- function(dat, regu=c(0,0,0), se_type = c("cov", "data") ){
   mom <- add_moments(prior_moments(ncol(dat), regu),
                      data_moments(dat))
   sigma <- mom2cov(mom)
+
+  se <- switch(match.arg(se_type), 
+               cov = cov2se(sigma),
+               data = dat2se(dat))
+  
   list(est = mom2est(mom), 
        cov = sigma,
-       se = cov2se(sigma),
-       n = mom$n,
-       nraw = nrow(dat),
+       se = se,
+       n = nrow(dat),
+       ntotal = mom$n,
        npseudo = regu[1])
 }
 

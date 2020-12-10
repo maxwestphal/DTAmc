@@ -20,12 +20,12 @@ mom2cov <- function(mom){
   n <- mom[[1]]
   A <- mom[[2]]
   a <- diag(A)
-  return((n*A - (a %*% t(a))) / (n^2) / (n+1))
+  return((n*A - (a %*% t(a))) / (n^2) / (n+1)) ## TODO: check correctness (PUB3)
 }
 
 dat2est <- function(dat, regu=c(0,0,0)){
   n <- nrow(dat)
-  (colMeans(dat)*n + regu[2])/(n+regu[1])
+  (colMeans(dat)*n + regu[2])/(n+regu[1]) 
 }
 
 dat2cov <- function(dat){

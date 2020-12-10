@@ -85,7 +85,7 @@ compare(yhat, y)
 Main function of the package
 
 ```{r dta1}
-#dta(compare(yhat, y))
+dta(compare(yhat, y))
 ```
 
 More details on the dta function are provided in the last section
@@ -108,22 +108,54 @@ indicate correct and false predictions respectively.
 
 ## Common workflows
 
-The pipe operator
+The pipe operator %>%
+allows us to chain together subsequent operations in R. 
+This is useful, as the dta function expects preprocessed data indicating 
+correct (1) and false (0) predictions. Furthermore 
+
+For instance, i
+
 
 ```{r workflow1}
 NA
 ```
 
 
-## dta function details
-detailed explanations of function arguments
 
-- 
+## Multiple testing for co-primary endpoints
+
+### Specification of hypotheses
+
+The R command
+
+```{r dtafun1, eval=FALSE}
+?dta 
+```
+
+gives an overview over the function arguments of the dta function.
+
+- comparator defines one of the classification rules under consideration to be the primary comparator
+- benchmark is a pre-defined accuracy threshold for each subgroup
+
+Together this implies the hypotheses system that is considered, namely
+
+$H_0: \forall g \forall m: \theta_m^g \leq \theta_0^g$
+
+if comparator is 0
+
+- alpha is the significance level or type I error rate $\alpha$, often set to $\alpha = 0.05$
+- alternative 
+
+### Specification of statistical methods
+
+We will at the remaining arguments in some detail, which define the statistical 
+procedure to obtain simultaneous confidence intervals and p values.
+
+Let's start by looking at the regu argument which indicates 
+
 
 
 ## References
 
-1. PAPER
+1. DTAmc
 
-## TODO
-# section numbers

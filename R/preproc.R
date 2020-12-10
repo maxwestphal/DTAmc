@@ -2,6 +2,9 @@ preproc_comp <- function(comparator, data){
   if(is.null(comparator)){
     return(NULL)
   }
+  if(comparator == 0){
+    return(NULL)
+  }
   
   stopifnot(is.numeric(comparator) | is.character(comparator))
   stopifnot(length(comparator) == 1)

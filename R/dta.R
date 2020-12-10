@@ -35,7 +35,7 @@ dta <- function(data = sample_data(seed=1337),
                 benchmark = 0.5,
                 alpha = 0.05,
                 alternative = c("greater", "two.sided", "less"), 
-                adjustment = c("none", "bonferroni", "maxt", "bootstrap"),
+                adjustment = c("none", "bonferroni", "maxt", "bootstrap", "mbeta"),
                 transformation = c("none", "logit"),
                 regu = FALSE,
                 pars = list(),
@@ -87,8 +87,8 @@ dta_none <- function(data = sample_data(seed=1337),
                      alternative = "greater",
                      transformation = "none",
                      regu = FALSE,
-                     pars = list(),
-                     ...){  
+                     pars = list()
+                     ){  
   
   stats <- data2stats(data, regu = regu)
   cv <- cv_uni(alpha, alternative)
@@ -116,8 +116,8 @@ dta_bonferroni <- function(data = sample_data(seed=1337),
                            alternative = "greater",
                            transformation = "none",
                            regu = FALSE,
-                           pars = list(),
-                           ...){
+                           pars = list()
+                           ){
   
   m <- ncol(data[[1]])
   
@@ -147,8 +147,8 @@ dta_maxt <- function(data = sample_data(seed=1337),
                      alternative = "greater",
                      transformation = "none",
                      regu = FALSE,
-                     pars = list(),
-                     ...){
+                     pars = list()
+                     ){
   
   stats <- data2stats(data, regu = regu)
   R <- cov2cor(active_cov(stats))
@@ -178,22 +178,15 @@ dta_bootstrap <- function(data = sample_data(seed=1337),
                           alternative = "greater",
                           transformation = "none",
                           regu = FALSE,
-                          pars = list(),
-                          ...){
+                          pars = list()
+                          ){
   
   stats <- data2stats(data, regu = regu)
-  
-  ## TODO: write wrapper for boot sample 
-  nboot <- ifelse(is.null(pars$nboot), 2000, pars$nboot)
-  message(paste0("Drawing ", nboot, " bootstrap samples..."))
-  group <- unlist(sapply(1:length(data), function(g) rep(g, nrow(data[[g]]))))
-  bst <- boot::boot(do.call(rbind, data), statistic = maxMinT,
-                    R = nboot, strata=group, group=group, regu=regu)$t
-  
+  bst <- bootstrap_sample(data, regu, pars) 
   cv <- cv_bootstrap(alpha, alternative, bst)
   
   ## output
-  ## TODO: write function that preps output for all dta_XYZ
+  ## TODO: write function that preps output for all dta_XYZ, reduce redundancy
   out <- list()
   out$results <- stats2results(
     stats=stats, cv=cv, pval_fun=pval_bootstrap(bst),
@@ -210,19 +203,6 @@ dta_bootstrap <- function(data = sample_data(seed=1337),
   return(out)
 }
 
-dta_wildbs <- function(data = sample_data(seed=1337),
-                       comparator = NULL,
-                       benchmark = 0.5,
-                       alpha = 0.05,
-                       alternative = "greater",
-                       transformation = "none",
-                       regu = FALSE,
-                       pars = list(),
-                       ...){
-  ## TODO
-  stop("adjustment wildbs not yet implemented")
-}
-
 dta_mbeta <- function(data = sample_data(seed=1337),
                       comparator = NULL,
                       benchmark = 0.5,
@@ -230,17 +210,46 @@ dta_mbeta <- function(data = sample_data(seed=1337),
                       alternative = "greater",
                       transformation = "none",
                       regu = FALSE,
-                      pars = list(),
-                      ...) {
-  ## TODO
-  stop("adjustment mbeta not yet implemented")
+                      pars = list()
+                      ) {
+  
+  ## output
+  out <- list()
+  out$results <- results_mbeta(data, comparator, benchmark,
+                               alpha, alternative, transformation, regu, pars)
+  
+  
+  
+  out$info <- list(n = sapply(data, nrow), 
+                   m = ncol(data[[1]]),
+                   alpha = alpha,
+                   alpha_adj = alpha_bootstrap(alpha, alternative, bst),
+                   cv = NA)
+  
+  return(out)
 }
 
 
 ## TODO:
 ## one sided versus two sided tests/intervals - interpretation?
  
+
+
+
 ## TODO: prob not needed?!?
+# dta_wildbs <- function(data = sample_data(seed=1337),
+#                        comparator = NULL,
+#                        benchmark = 0.5,
+#                        alpha = 0.05,
+#                        alternative = "greater",
+#                        transformation = "none",
+#                        regu = FALSE,
+#                        pars = list(),
+#                        ...){
+#   ## TODO
+#   stop("adjustment wildbs not yet implemented")
+# }
+
 # dta_generic <- function(stats,
 #                         alpha_adj,
 #                         cv,

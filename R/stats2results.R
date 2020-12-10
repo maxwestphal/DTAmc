@@ -14,18 +14,10 @@ stat2results <- function(stat, cv=c(-1.96, 1.96), pval_fun=pval_uni,
   bm.t <- tf$est_link(benchmark)
   se.t <- tf$se_link(stat$se, stat$n, stat$est)
   tstat <- (est.t - bm.t)/se.t
-  modnames <- names(stat$est)
-  hyp <- paste0(modnames, 
-                ifelse(is.null(comparator), "",
-                       paste0(" - ", modnames(comparator))),
-                switch(alternative, 
-                       greater = " <= ",
-                       two.sided = " = ",
-                       less = " >= "),
-                benchmark)
+
   result <-
     data.frame(
-      hypothesis = hyp,
+      hypothesis = hypotheses(names(stat$est), comparator, benchmark, alternative),
       estimate = stat$est,
       lower = tf$inv(est.t + cv[1] * se.t), 
       upper = tf$inv(est.t + cv[2] * se.t),
@@ -35,6 +27,16 @@ stat2results <- function(stat, cv=c(-1.96, 1.96), pval_fun=pval_uni,
   return(result)
 }
 
+hypotheses <- function(modnames, comparator, benchmark, alternative){
+  paste0(modnames, 
+         ifelse(is.null(comparator), "",
+                paste0(" - ", modnames[comparator])),
+         switch(alternative, 
+                greater = " <= ",
+                two.sided = " = ",
+                less = " >= "),
+         benchmark)
+}
 
 ## TODO: delete OLD
 # stats2results <- function(stats, cv, comp, alt, tf, ...) {
