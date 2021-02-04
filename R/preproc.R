@@ -40,25 +40,3 @@ preproc_regu <- function(regu="2_1_0.5"){
   stopifnot(all(regu >= 0))
   return(regu)
 }
-
-
-
-
-
-
-## TODO: REMOVE:
-# matrix_product <- function(...){
-#   L <- list(...)
-#   stopifnot(length(L) > 0)
-#   R <- L[[1]]
-#   if(length(L) > 1){
-#     for(g in 1:length(L)){
-#       R <- R %*% L[[g]]
-#     }
-#   }
-#   return(R)
-# }
-
-# df2list <- function(df, group){
-#   lapply(unique(group), function(g) as.data.frame(df)[group==g, ])
-# }

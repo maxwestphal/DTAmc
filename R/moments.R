@@ -1,3 +1,4 @@
+## data to moments calculations
 data_moments <- function(d) {
   list(n = nrow(d), moments = t(d) %*% d)
 }
@@ -12,6 +13,8 @@ add_moments <- function(pmom, dmom){
   return(mapply("+", pmom, dmom, SIMPLIFY = FALSE))
 }
 
+
+## calculations based on moments 
 mom2est <- function(mom){
   return(diag(mom[[2]]) / mom[[1]])
 }
@@ -23,13 +26,23 @@ mom2cov <- function(mom){
   return((n*A - (a %*% t(a))) / (n^2) / (n+1)) ## TODO: check correctness (PUB3)
 }
 
+cov2var <- function(cov){
+  diag(cov)
+}
+
+cov2se <- function(cov){
+  sqrt(cov2var(cov))
+}
+
+
+## calculations based on raw data
 dat2est <- function(dat, regu=c(0,0,0)){
   n <- nrow(dat)
   (colMeans(dat)*n + regu[2])/(n+regu[1]) 
 }
 
-dat2cov <- function(dat){
-  cov(dat)/nrow(dat)
+data2est <- function(data, regu=c(0,0,0)){
+  lapply(data, function(dat) dat2est(dat, regu=regu))
 }
 
 dat2var <- function(dat){
@@ -40,20 +53,51 @@ dat2se <- function(dat){
   sqrt(dat2var(dat))
 }
 
-cov2var <- function(cov){
-  diag(cov)
+dat2cov <- function(dat){
+  cov(dat)/nrow(dat)
 }
 
-cov2se <- function(cov){
-  sqrt(cov2var(cov))
+
+## calculations based on stats
+stats2est <- function(stats){
+  lapply(stats, function(s) s$est)
 }
 
-# data_moments2 <- function(d){
-#   M <- matrix(NA, ncol(d), ncol(d))
-#   for(j1 in 1:ncol(d)){
-#     for(j2 in j1:ncol(d)){
-#       M[j1, j2] <- M[j2, j1] <- sum(d[, j1] + d[, j2]==2)
-#     }
-#   }
-#   return(M)
-# }
+stats2tstat <- function(stats, mu0, alternative="greater"){
+  stopifnot(is.list(stats))
+  G <- length(stats)
+  m <- length(stats[[1]]$est)
+  stopifnot(length(mu0) == G)
+  if(is.numeric(mu0)){
+    mu0 <- lapply(1:G, function(g) rep(mu0[g], m))
+  }
+  stopifnot(is.list(mu0))
+  
+  lapply(1:G, function(g){
+    tstat_tr((stats[[g]]$est - mu0[[g]])/stats[[g]]$se, alternative)
+  })
+}
+
+tstat_tr <- function(x, alternative="greater"){
+  switch(alternative,
+         greater = x,
+         two.sided = abs(x),
+         less = -x)
+}
+
+## TODO: needed at all?
+b2bb <- function(b, G=1:2){
+  lapply(G, function(x) as.numeric(b==x))
+}
+
+tstat_cpe <- function(est, tstat){
+  # tstat <- lapply(tstat, function(x){
+  #   y <- x; y[!is.finite(x)] <- 1e+6; y
+  # })
+  b <- pargmin(args=est, rdm=TRUE) 
+  #bb <- do.call(cbind, b2bb(b, 1:length(est)))
+  do.call(cbind, tstat)[cbind(1:length(b), b)]
+  #apply(mapply('*', bb, tstat), 1, sum)
+}
+
+

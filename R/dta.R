@@ -14,19 +14,36 @@
 #' Data should have values 0 (incorrect prediction) or 1 (correct prediction). 
 #' \link{compare} provides a simple way to match predictions against true labels.
 #' Alternatively, data can be a list of such arrays (all with m columns) defining different subsamples.
-#' @param comparator numeric vector 
+#' @param comparator (NOT YET IMPLEMENTED)
 #' @param benchmark value to compare against (RHS)
 #' @param alpha numeric (default: 0.05), in unit interval
 #' @param alternative character, specify alternative hypothesis
 #' @param adjustment character, specify type of statistical adjustment taken to address multiplicity
 #' @param transformation character, define transformation to ensure results 
-#' (e.g. point estimates, confidence limits) lie in unit interval
+#' (e.g. point estimates, confidence limits) lie in unit interval ("none" (default) or "logit")
 #' @param regu numeric vector of length 3, specify type of shrinkage. TODO: DETAILS
 #' Alternatively, logical of length one (TRUE := c(2, 1, 1/2), FALSE := c(0, 0, 0))
 #' @param pars further parameters given as named list
 #' @param ... additional named parameters
 #'
 #' @return DTAmcResults object, which is a list of analysis results
+#' @details 
+#' Adjustment methods:
+#' - "none" (default): no adjustment for multiplicity
+#' - "bonferroni": Bonferroni adjustment
+#' - "maxt": maxT adjustment
+#' ' - "mbeta": Bayesian approach...
+#' - "bootstrap": Bootstrap approach, whereby several details can be set via the 
+#' 'pars' argument (see below)
+#' 
+#' parameters to be adjusted via 'pars=list(par1=val1, par2=val2, ...)', e.g. list(type="pairs", nboot=10000), alternative via '...'
+#' - type: "pairs" (default) or "wild" = type of bootstrap
+#' - nboot = number of bootstrap drwas (default 5000)
+#' - res_tra = 0,1,2 or 3 = type of residual transformation of wild boostrap (default = 0: no transformation)
+#' (see https://www.math.kth.se/matstat/gru/sf2930/papers/wild.bootstrap.pdf)
+
+#' 
+#' 
 #' @export
 #'
 #' @examples
@@ -182,7 +199,7 @@ dta_bootstrap <- function(data = sample_data(seed=1337),
                           ){
   
   stats <- data2stats(data, regu = regu)
-  bst <- bootstrap_sample(data, regu, pars) 
+  bst <- bootstrap_sample(data, regu, pars, alternative) 
   cv <- cv_bootstrap(alpha, alternative, bst)
   
   ## output
