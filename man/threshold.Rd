@@ -23,7 +23,7 @@ numeric (n x L) matrix with categorical outcomes after thresholding
 }
 \description{
 This function allows to split continuous (bio)markers into two or more categories
-by specifying one or more cutoffs.
+by specifying one or more cutoff values.
 }
 \examples{
 set.seed(123)

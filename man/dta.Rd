@@ -2,12 +2,13 @@
 % Please edit documentation in R/dta.R
 \name{dta}
 \alias{dta}
-\title{Diagnostic test accuracy analysis}
+\title{Analysis for Diagnostic Test Accuracy studies with multiple index tests.}
 \usage{
 dta(
   data = sample_data(seed = 1337),
-  comparator = NULL,
+  contrast = NULL,
   benchmark = 0.5,
+  comparator = 1,
   alpha = 0.05,
   alternative = c("greater", "two.sided", "less"),
   adjustment = c("none", "bonferroni", "maxt", "bootstrap", "mbeta"),
@@ -23,11 +24,13 @@ Data should have values 0 (incorrect prediction) or 1 (correct prediction).
 \link{compare} provides a simple way to match predictions against true labels.
 Alternatively, data can be a list of such arrays (all with m columns) defining different subsamples.}
 
-\item{comparator}{(NOT YET IMPLEMENTED)}
+\item{contrast}{(NOT YET IMPLEMENTED)}
 
-\item{benchmark}{value to compare against (RHS)}
+\item{benchmark}{value to compare against (RHS), should have same length as data.}
 
-\item{alpha}{numeric (default: 0.05), in unit interval}
+\item{comparator}{LEGACY ARGUMENT, has no effect!}
+
+\item{alpha}{numeric, significance level (default: 0.05)}
 
 \item{alternative}{character, specify alternative hypothesis}
 
@@ -36,7 +39,7 @@ Alternatively, data can be a list of such arrays (all with m columns) defining d
 \item{transformation}{character, define transformation to ensure results
 (e.g. point estimates, confidence limits) lie in unit interval ("none" (default) or "logit")}
 
-\item{regu}{numeric vector of length 3, specify type of shrinkage. TODO: DETAILS
+\item{regu}{numeric vector of length 3, specify type of shrinkage.
 Alternatively, logical of length one (TRUE := c(2, 1, 1/2), FALSE := c(0, 0, 0))}
 
 \item{pars}{further parameters given as named list}
@@ -47,8 +50,8 @@ Alternatively, logical of length one (TRUE := c(2, 1, 1/2), FALSE := c(0, 0, 0))
 DTAmcResults object, which is a list of analysis results
 }
 \description{
-Assess classification accuracy stratified by subpopulation, in the simplest case
-diseased and healthy individuals.
+Assess classification accuracy of multiple classifcation rules stratified
+by subpopulation, in the simplest case diseased and healthy individuals.
 }
 \details{
 Adjustment methods:
@@ -56,15 +59,15 @@ Adjustment methods:
 \item "none" (default): no adjustment for multiplicity
 \item "bonferroni": Bonferroni adjustment
 \item "maxt": maxT adjustment
-' - "mbeta": Bayesian approach...
+' - "mbeta": Bayesian approach
 \item "bootstrap": Bootstrap approach, whereby several details can be set via the
 'pars' argument (see below)
 }
 
-parameters to be adjusted via 'pars=list(par1=val1, par2=val2, ...)', e.g. list(type="pairs", nboot=10000), alternative via '...'
+Additional parameters to be adjusted via 'pars=list(par1=val1, par2=val2, ...)', e.g. list(type="pairs", nboot=10000), alternatively via '...'
 \itemize{
 \item type: "pairs" (default) or "wild" = type of bootstrap
-\item nboot = number of bootstrap drwas (default 5000)
+\item nboot = number of bootstrap draws (default 5000)
 \item res_tra = 0,1,2 or 3 = type of residual transformation of wild boostrap (default = 0: no transformation)
 (see https://www.math.kth.se/matstat/gru/sf2930/papers/wild.bootstrap.pdf)
 }

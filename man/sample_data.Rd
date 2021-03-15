@@ -24,7 +24,7 @@ sample_data(
 
 \item{m}{number of models}
 
-\item{method}{}
+\item{method}{either "roc", "lfc" (multiple subsamples) or "prob" (no subsamples)}
 }
 \value{
 
