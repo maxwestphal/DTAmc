@@ -4,7 +4,7 @@
 #' @param m number of models
 #' @param prev prevalence
 #' @param random random sampling (TRUE) or fixed group sample sizes
-#' @param method 
+#' @param method either "roc", "lfc" (multiple subsamples) or "prob" (no subsamples)
 #' @param seed
 #' @param pars
 #' @param ...

@@ -7,30 +7,22 @@ output:
     keep_md: true
 ---
 
-
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 ## DTAmc - an R package for multiple comparisons in Diagnostic Test Accuracy Studies
 
 ## Installation
 
-
-```r
+```{r}
 123
-```
-
-```
-## [1] 123
 ```
 
 ## Usage
 
-
-```r
+```{r}
 123
-```
-
-```
-## [1] 123
 ```
 
 ## References

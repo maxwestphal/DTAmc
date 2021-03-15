@@ -3,7 +3,6 @@ data2stats <- function(data, regu=c(0,0,0), raw=FALSE){
 }
 
 dat2stats <- function(dat, regu=c(0,0,0), raw=FALSE){
-  
   if(raw){
     est <- dat2est(dat)
     sig <- NA

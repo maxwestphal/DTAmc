@@ -23,7 +23,7 @@ mom2cov <- function(mom){
   n <- mom[[1]]
   A <- mom[[2]]
   a <- diag(A)
-  return((n*A - (a %*% t(a))) / (n^2) / (n+1)) ## TODO: check correctness (PUB3)
+  return((n*A - (a %*% t(a))) / (n^2) / (n+1)) ## TODO: check correctness
 }
 
 cov2var <- function(cov){
@@ -74,15 +74,21 @@ stats2tstat <- function(stats, mu0, alternative="greater"){
   stopifnot(is.list(mu0))
   
   lapply(1:G, function(g){
-    tstat_tr((stats[[g]]$est - mu0[[g]])/stats[[g]]$se, alternative)
+    tstat_tr((stats[[g]]$est - mu0[[g]])/stats[[g]]$se, alternative) 
   })
 }
 
 tstat_tr <- function(x, alternative="greater"){
-  switch(alternative,
-         greater = x,
-         two.sided = abs(x),
-         less = -x)
+  y <- switch(alternative,
+              greater = x,
+              two.sided = abs(x),
+              less = -x) 
+  return(nan2zero(y))
+}
+
+nan2zero <- function(x){
+  x[is.nan(x)] <- 0
+  return(x)
 }
 
 ## TODO: needed at all?
@@ -91,13 +97,8 @@ b2bb <- function(b, G=1:2){
 }
 
 tstat_cpe <- function(est, tstat){
-  # tstat <- lapply(tstat, function(x){
-  #   y <- x; y[!is.finite(x)] <- 1e+6; y
-  # })
   b <- pargmin(args=est, rdm=TRUE) 
-  #bb <- do.call(cbind, b2bb(b, 1:length(est)))
   do.call(cbind, tstat)[cbind(1:length(b), b)]
-  #apply(mapply('*', bb, tstat), 1, sum)
 }
 
 

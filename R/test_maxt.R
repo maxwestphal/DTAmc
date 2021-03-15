@@ -1,5 +1,3 @@
-## TODO: how to handle ties for argmin???
-
 active_cov <- function(stats){
   G <- length(stats)
   ## argmin vector am (where is minimum entry of estimates?)
@@ -59,10 +57,9 @@ pval_maxt <- function(R){
              mvtnorm::pmvnorm(lower = rep(-abs(x), m), upper = rep(abs(x), m), corr=R)[1]),
            less = sapply(tstat, function(x) 
              mvtnorm::pmvnorm(lower = rep(-Inf, m), upper = rep(x, m), corr=R)[1]))
-  } # TODO: correct pvals??
+  } # TODO: correct pvals?
 }
 
-alpha_maxt <- function(alpha, alternative, R){
-  ## TODO: adjusted alpha
+alpha_maxt <- function(alpha, alternative, R){ # TODO
   NA
 }

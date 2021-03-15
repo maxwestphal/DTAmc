@@ -1,7 +1,7 @@
 #' Threshold continuous (bio)markers 
 #' 
 #' This function allows to split continuous (bio)markers into two or more categories 
-#' by specifying one or more cutoffs.
+#' by specifying one or more cutoff values.
 #' 
 #' @param markers numeric matrix of continuous (bio)markers to be thresholded.
 #' Assume an (n x r) matrix with n observations (subjects) of m continuous markers.
@@ -27,10 +27,6 @@
 threshold <- function(markers, cutoffs=rep(0, ncol(markers)), map=1:ncol(markers)){
   stopifnot(is.matrix(cutoffs) | is.numeric(cutoffs))
   cutoffs <- as.matrix(cutoffs)
-  ## TODO: why needed??
-  # if(ncol(cutoffs) == 1){
-  #   cutoffs <- do.call(cbind, lapply(1:ncol(markers), function(k) cutoffs))
-  # }
   if(!all(apply(cutoffs, 1, function(x) length(x) == length(unique(x))))){
     stop("Marker split cannot be based on duplicate cutoffs.")
   }

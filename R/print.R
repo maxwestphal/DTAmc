@@ -6,7 +6,7 @@ print.DTAmcResults <- function(x){
 }
 
 #' @export
-summary.DTAmcResults <- function(x){
+summary.DTAmcResults <- function(x){ # TODO
   cat("\n")
   cat("<> Diagnostic Test Accuracy <> \n")
   

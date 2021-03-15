@@ -13,7 +13,7 @@ preproc_comp <- function(comparator, data){
   modnames <- colnames(data[[1]])
   
   if(is.numeric(comparator)){
-    stopifnot(comparator %in% 1:m)
+    stopifnot(comparator %in% 1:m) ## TODO
   }
   if(is.character(comparator)){
     stopifnot(comparator %in% modnames)

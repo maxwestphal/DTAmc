@@ -115,6 +115,8 @@ colMeans(Q)
 
 solve(t(X) %*% X) %*% t(X) %*% Q
 
+(solve(t(X) %*% X) %*% t(X)) %*% (X %*% solve(t(X) %*% X))
+
 ## cov of beta hat
 solve(t(X) %*% X)
 
@@ -140,5 +142,7 @@ qnorm(0.025)
 d <- c(1000, 10, 100000); array(1:prod(d), dim=d)
 
 
+
+data
 
 
