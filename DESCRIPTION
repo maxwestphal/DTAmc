@@ -1,5 +1,5 @@
 Package: DTAmc
-Title: Diagnostic Test Accuracy: multiple comparisons
+Title: Diagnostic Test Accuracy studies with multiple comparisons
 Version: 0.0.5
 Authors@R: 
     person(given = "Max",
