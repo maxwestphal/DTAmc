@@ -9,12 +9,12 @@ extended case of more than two subpopulations of interest (i.e. multi-class clas
 NOTE: THIS IS AN EARLY DEVELOPMENT VERSION. NOT RECOMMENDED FOR SERIOUS APPLICATION.
 
 
+
 ---
 
 ## Installation
 
-
-
+This package can be installed 
 ```r
 remotes::install_github('maxwestphal/DTAmc')
 ```
@@ -37,3 +37,5 @@ Some examples can
 ---
 
 ## References
+
+-
