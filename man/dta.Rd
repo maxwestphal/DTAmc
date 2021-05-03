@@ -6,9 +6,8 @@
 \usage{
 dta(
   data = sample_data(seed = 1337),
-  contrast = NULL,
+  contrast = define_contrast("Raw"),
   benchmark = 0.5,
-  comparator = 1,
   alpha = 0.05,
   alternative = c("greater", "two.sided", "less"),
   adjustment = c("none", "bonferroni", "maxt", "bootstrap", "mbeta"),
@@ -24,11 +23,9 @@ Data should have values 0 (incorrect prediction) or 1 (correct prediction).
 \link{compare} provides a simple way to match predictions against true labels.
 Alternatively, data can be a list of such arrays (all with m columns) defining different subsamples.}
 
-\item{contrast}{(NOT YET IMPLEMENTED)}
+\item{contrast}{specify contrast via \link{define_contrast}}
 
 \item{benchmark}{value to compare against (RHS), should have same length as data.}
-
-\item{comparator}{LEGACY ARGUMENT, has no effect!}
 
 \item{alpha}{numeric, significance level (default: 0.05)}
 

@@ -4,12 +4,12 @@
 \alias{define_contrast}
 \title{define a contrast (matrix) to specify exact hypothesis system}
 \usage{
-define_contrast(type = c("Raw", "Dunnett", "Tukey"), base = 1)
+define_contrast(type = c("Raw", "Dunnett", "Tukey"), comparator = NA)
 }
 \arguments{
 \item{type}{c("Raw", "Dunnett", "Tukey")}
 
-\item{base}{}
+\item{comparator}{}
 }
 \value{
 

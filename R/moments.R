@@ -38,24 +38,27 @@ cov2se <- function(cov){
 ## calculations based on raw data
 dat2est <- function(dat, regu=c(0,0,0)){
   n <- nrow(dat)
-  (colMeans(dat)*n + regu[2])/(n+regu[1]) 
+  (colSums(dat) + regu[2])/(n+regu[1]) 
 }
 
 data2est <- function(data, regu=c(0,0,0)){
   lapply(data, function(dat) dat2est(dat, regu=regu))
 }
 
-dat2var <- function(dat){
-  apply(dat, 2, var)/nrow(dat)
+dat2var <- function(dat, regu=c(0,0,0)){
+  #apply(dat, 2, var)/nrow(dat)
+  a <- colSums(dat) + regu[2]
+  b <- regu[1] + nrow(dat) - a
+  (a*b) / ((a+b)^2*(a+b+1))
 }
 
-dat2se <- function(dat){
-  sqrt(dat2var(dat))
+dat2se <- function(dat, regu=c(0,0,0)){
+  sqrt(dat2var(dat, regu))
 }
 
-dat2cov <- function(dat){
-  cov(dat)/nrow(dat)
-}
+# dat2cov <- function(dat){
+#   cov(dat)/nrow(dat)
+# }
 
 
 ## calculations based on stats
@@ -67,7 +70,7 @@ stats2tstat <- function(stats, mu0, alternative="greater"){
   stopifnot(is.list(stats))
   G <- length(stats)
   m <- length(stats[[1]]$est)
-  stopifnot(length(mu0) == G)
+  #stopifnot(length(mu0) == G) # TODO: not needed, as block after?!
   if(is.numeric(mu0)){
     mu0 <- lapply(1:G, function(g) rep(mu0[g], m))
   }

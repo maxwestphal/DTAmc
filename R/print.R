@@ -28,3 +28,5 @@ summary.DTAmcResults <- function(x){ # TODO
   cat("+  ...\n")
 
 }
+
+## TODO: FINISH!

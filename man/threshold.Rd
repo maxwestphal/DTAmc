@@ -25,13 +25,3 @@ numeric (n x L) matrix with categorical outcomes after thresholding
 This function allows to split continuous (bio)markers into two or more categories
 by specifying one or more cutoff values.
 }
-\examples{
-set.seed(123)
-M <- as.data.frame(mvtnorm::rmvnorm(20, mean=rep(0, 3), sigma=2*diag(3)))
-M
-threshold(M)
-C <- matrix(rep(c(-1, 0, 1, -2, 0, 2), 3), ncol=3, byrow = TRUE)
-C
-w <- c(1, 1, 2, 2, 3, 3)
-threshold(M, C, w)
-}

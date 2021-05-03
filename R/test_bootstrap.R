@@ -27,10 +27,10 @@ alpha_bootstrap <- function(alpha, alternative, bst){ # TODO
 
 
 ## create bootstrap sample of max test statistic
-bootstrap_sample <- function(data, regu, pars, alternative="greater"){
+bootstrap_sample <- function(data, contrast, regu, alternative, pars){
   pars$type <- ifelse(is.null(pars$type), "pairs", pars$type)
   pars$nboot <- ifelse(is.null(pars$nboot), 2000, pars$nboot)
-  pars$variant <- ifelse(is.null(pars$variant ), "lfc", pars$variant )
+  pars$variant <- ifelse(is.null(pars$variant ), "lfc", pars$variant ) # TODO: ?!?
   
   stopifnot(pars$type %in% c("pairs", "wild"))
   stopifnot(pars$nboot %% 1 == 0)
@@ -38,7 +38,7 @@ bootstrap_sample <- function(data, regu, pars, alternative="greater"){
   message(paste0("DTAmc: Drawing ", pars$nboot, " '", pars$type, "' bootstrap samples..."))
   
   do.call(paste0("bootstrap_sample_", pars$type), 
-          args=list(data=data, regu=regu, pars=pars, alternative=alternative))
+          args=list(data, contrast, regu, alternative, pars))
 }
 
 
@@ -47,19 +47,23 @@ bs_draw_pairs <- function(data, G=length(data), ng=sapply(data, nrow)){
   lapply(1:G, function(g) data[[g]][sample(ng[g], replace=TRUE), ] )
 }
 
-bootstrap_sample_pairs <- function(data, regu=c(0,0,0), pars=list(nboot=5000),
-                                   alternative="greater"){
+bootstrap_sample_pairs <- function(data, contrast, regu=c(0,0,0), 
+                                   alternative="greater", pars=list(nboot=2000)){
   G <- length(data); ng=sapply(data, nrow)
-  mu0 <- stats2est(data2stats(data, regu=regu))
-  if(pars$variant == "max"){ # TODO: remove variant completely
-    y <- max(do.call(pmin, args=mu0))
-    mu0 <- lapply(1:G, function(g) rep(y, m))
-  }
+  mu0 <- stats2est(data2stats(data, contrast, regu))
+  # pars=list(type="pairs", nboot=5000)
+  # TODO: remove variant completely?!?
+  # if(pars$variant == "max"){
+  #   y <- max(do.call(pmin, args=mu0))
+  #   mu0 <- lapply(1:G, function(g) rep(y, m))
+  # }
   sapply(1:pars$nboot, function(b){
-    st <- data2stats(bs_draw_pairs(data, G=G, ng=ng), regu=regu);
+    st <- data2stats(bs_draw_pairs(data, G=G, ng=ng), contrast, regu);
     tstat_cpe(stats2est(st), stats2tstat(st, mu0, alternative)) %>% max()
   })
 }
+
+
 
 
 ## wild bootstrap
@@ -72,8 +76,8 @@ bs_draw_wild <- function(M, D,
   })
 }
 
-bootstrap_sample_wild <- function(data, regu=c(0,0,0), pars=list(nboot=5000),
-                                  alternative="greater"){
+bootstrap_sample_wild <- function(data, contrast, regu=c(0,0,0), 
+                                  alternative="greater", pars=list(nboot=2000)){
   pars$dist <- ifelse(is.null(pars$dist), "Normal", pars$dist)
   pars$res_tra <- ifelse(is.null(pars$res_tra), 0, pars$res_tra)
   
@@ -86,14 +90,16 @@ bootstrap_sample_wild <- function(data, regu=c(0,0,0), pars=list(nboot=5000),
   }
   G <- length(data); ng=sapply(data, nrow); m <- ncol(data[[1]])
   
-  mu0 <- stats2est(data2stats(data, regu=regu))
-  if(pars$variant == "max"){
-    y <- max(do.call(pmin, args=mu0))
-    mu0 <- lapply(1:G, function(g) rep(y, m))
-  }
+  mu0_raw <- stats2est(data2stats(data, contrast=define_contrast("raw"), regu))
+  mu0 <- lapply(mu0_raw, function(x) as.numeric(contrast(data) %*% x))
+  ## TODO: needed?
+  # if(pars$variant == "max"){
+  #   y <- max(do.call(pmin, args=mu0))
+  #   mu0 <- lapply(1:G, function(g) rep(y, m))
+  # }
   
   M <- lapply(1:G, function(g){
-    matrix(mu0[[g]], nrow=ng[g], ncol=length(mu0[[g]]), byrow=TRUE)
+    matrix(mu0_raw[[g]], nrow=ng[g], ncol=length(mu0_raw[[g]]), byrow=TRUE)
   })
   D <- lapply(1:G, function(g){
     data[[g]] - M[[g]] 
@@ -101,7 +107,7 @@ bootstrap_sample_wild <- function(data, regu=c(0,0,0), pars=list(nboot=5000),
   sapply(1:pars$nboot, function(b){
     st <- data2stats(bs_draw_wild(M, D, G, ng, m,
                                   dist=pars$dist, res_tra=pars$res_tra),
-                     regu=regu, raw=TRUE);
+                     contrast, regu, raw=TRUE);
     tstat_cpe(stats2est(st), stats2tstat(st, mu0, alternative)) %>% max()
   })
 }

@@ -16,14 +16,14 @@
 #' @export
 #'
 #' @examples
-#' set.seed(123)
-#' M <- as.data.frame(mvtnorm::rmvnorm(20, mean=rep(0, 3), sigma=2*diag(3)))
-#' M
-#' threshold(M)
-#' C <- matrix(rep(c(-1, 0, 1, -2, 0, 2), 3), ncol=3, byrow = TRUE)
-#' C
-#' w <- c(1, 1, 2, 2, 3, 3)
-#' threshold(M, C, w)
+# set.seed(123)
+# M <- as.data.frame(mvtnorm::rmvnorm(20, mean=rep(0, 3), sigma=2*diag(3)))
+# M
+# threshold(M)
+# C <- matrix(rep(c(-1, 0, 1, -2, 0, 2), 3), ncol=3, byrow = TRUE)
+# C
+# w <- c(1, 1, 2, 2, 3, 3)
+# threshold(M, C, w)
 threshold <- function(markers, cutoffs=rep(0, ncol(markers)), map=1:ncol(markers)){
   stopifnot(is.matrix(cutoffs) | is.numeric(cutoffs))
   cutoffs <- as.matrix(cutoffs)
@@ -32,16 +32,19 @@ threshold <- function(markers, cutoffs=rep(0, ncol(markers)), map=1:ncol(markers
   }
   stopifnot(all(map %in% 1:ncol(markers)))
   stopifnot(length(map) == nrow(cutoffs))
+  markers <- as.data.frame(markers)
   if(is.null(names(markers))){names(markers) <- paste0("marker", 1:ncol(markers))}
   
   C <- as.data.frame(matrix(NA, nrow=nrow(markers), ncol=nrow(cutoffs)))
   for(k in 1:nrow(cutoffs)){
     C[, k] <- threshold1(markers[, map[k]], cutoffs[k, ])
-    n <- sum(map[1:k] == map[k])
-    a <- ifelse(sum(map == map[k])>1, paste0("_", letters[n]), "")
-    names(C)[k] <- paste0(names(markers)[map[k]], "_cat", a)
+    if(ncol(cutoffs)==1){
+      a <- as.character(cutoffs[k, ])
+    }else{
+      a <- letters[sum(map[1:k] == map[k])]
+    }
+    names(C)[k] <- paste0(names(markers)[map[k]], "_", a)
   }
-  
   return(C)
 }
 

@@ -1,28 +1,3 @@
-preproc_comp <- function(comparator, data){
-  if(is.null(comparator)){
-    return(NULL)
-  }
-  if(comparator == 0){
-    return(NULL)
-  }
-  
-  stopifnot(is.numeric(comparator) | is.character(comparator))
-  stopifnot(length(comparator) == 1)
-  
-  m <- ncol(data[[1]])
-  modnames <- colnames(data[[1]])
-  
-  if(is.numeric(comparator)){
-    stopifnot(comparator %in% 1:m) ## TODO
-  }
-  if(is.character(comparator)){
-    stopifnot(comparator %in% modnames)
-    comparator <- which(comparator == modnames)
-  }
-  
-  return(comparator) 
-}
-
 preproc_regu <- function(regu="2_1_0.5"){
   if(is.logical(regu)){
     if(!regu){
@@ -40,3 +15,30 @@ preproc_regu <- function(regu="2_1_0.5"){
   stopifnot(all(regu >= 0))
   return(regu)
 }
+
+
+## TODO not needed??
+# preproc_comp <- function(comparator, data){
+#   if(is.null(comparator)){
+#     return(NULL)
+#   }
+#   if(comparator == 0){
+#     return(NULL)
+#   }
+#   
+#   stopifnot(is.numeric(comparator) | is.character(comparator))
+#   stopifnot(length(comparator) == 1)
+#   
+#   m <- ncol(data[[1]])
+#   modnames <- colnames(data[[1]])
+#   
+#   if(is.numeric(comparator)){
+#     stopifnot(comparator %in% 1:m) ## TODO
+#   }
+#   if(is.character(comparator)){
+#     stopifnot(comparator %in% modnames)
+#     comparator <- which(comparator == modnames)
+#   }
+#   
+#   return(comparator) 
+# }
