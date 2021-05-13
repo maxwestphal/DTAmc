@@ -96,7 +96,7 @@ dta <- function(data = sample_data(seed=1337),
   
   ## calculate & label result:
   out <- do.call(paste0("dta_", match.arg(adjustment)), args)
-  names(out$results) <- names(data)
+  names(out) <- names(data)
   class(out) <- append(class(out), "DTAmcResults")
   
   return(out)

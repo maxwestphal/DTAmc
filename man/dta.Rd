@@ -6,9 +6,9 @@
 \usage{
 dta(
   data = sample_data(seed = 1337),
-  contrast = define_contrast("Raw"),
-  benchmark = 0.5,
-  alpha = 0.05,
+  contrast = define_contrast("raw"),
+  benchmark = 0.75,
+  alpha = 0.025,
   alternative = c("greater", "two.sided", "less"),
   adjustment = c("none", "bonferroni", "maxt", "bootstrap", "mbeta"),
   transformation = c("none", "logit"),
@@ -56,9 +56,9 @@ Adjustment methods:
 \item "none" (default): no adjustment for multiplicity
 \item "bonferroni": Bonferroni adjustment
 \item "maxt": maxT adjustment
-' - "mbeta": Bayesian approach
 \item "bootstrap": Bootstrap approach, whereby several details can be set via the
 'pars' argument (see below)
+\item "mbeta": Bayesian approach
 }
 
 Additional parameters to be adjusted via 'pars=list(par1=val1, par2=val2, ...)', e.g. list(type="pairs", nboot=10000), alternatively via '...'

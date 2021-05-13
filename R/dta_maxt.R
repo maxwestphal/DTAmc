@@ -1,3 +1,33 @@
+dta_maxt <- function(data = sample_data(seed=1337),
+                     contrast = define_contrast("raw"),
+                     benchmark = 0.5,
+                     alpha = 0.05,
+                     alternative = "greater",
+                     transformation = "none",
+                     regu = FALSE,
+                     pars = list()
+){
+  
+  stats <- data2stats(data, contrast=contrast, regu = regu)
+  R <- cov2cor(active_cov(stats))
+  cv <- cv_maxt(R, alpha, alternative)
+  
+  ## output
+  stats %>% 
+    stats2results(
+      cv=cv, pval_fun=pval_maxt(R), benchmark,  
+      alternative, transformation
+    ) %>% 
+    setattr(
+      n = sapply(stats, function(x) x$n), m=ncol(R), 
+      alpha=alpha, alpha_adj=alpha_maxt(alpha, alternative, R), cv=cv
+    ) %>% 
+    return()
+}
+
+
+# Helper functions ----------------------------------------------------------------------------
+
 active_cov <- function(stats){
   G <- length(stats)
   ## argmin vector am (where is minimum entry of estimates?)
@@ -27,7 +57,7 @@ cv_maxt <-
            alpha = 0.05,
            alternative = "greater",
            ...) {
-   
+    
     
     tail <- switch (
       alternative,
@@ -42,7 +72,7 @@ cv_maxt <-
                  greater = c(-q, Inf),
                  two.sided = c(-q, q),
                  less = c(-Inf, -q)
-                 )
+    )
     
     return(cv)
   }
@@ -57,7 +87,7 @@ pval_maxt <- function(R){
              mvtnorm::pmvnorm(lower = rep(-abs(x), m), upper = rep(abs(x), m), corr=R)[1]),
            less = sapply(tstat, function(x) 
              mvtnorm::pmvnorm(lower = rep(-Inf, m), upper = rep(x, m), corr=R)[1]))
-  } # TODO: correct pvals?
+  } # TODO: correct pvals? NO, compare: dta(adj="maxt", regu=T)
 }
 
 alpha_maxt <- function(alpha, alternative, R){ # TODO

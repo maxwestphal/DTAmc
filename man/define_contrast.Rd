@@ -4,12 +4,13 @@
 \alias{define_contrast}
 \title{define a contrast (matrix) to specify exact hypothesis system}
 \usage{
-define_contrast(type = c("Raw", "Dunnett", "Tukey"), comparator = NA)
+define_contrast(type = c("raw", "Dunnett", "Tukey"), comparator = NA)
 }
 \arguments{
 \item{type}{c("Raw", "Dunnett", "Tukey")}
 
-\item{comparator}{}
+\item{comparator}{either integer (index of comparator, cannot be larger than ncol(data[\link{1}]))
+or character (name of rule to use for )}
 }
 \value{
 
