@@ -1,15 +1,14 @@
 Package: DTAmc
 Title: Diagnostic Test Accuracy studies with multiple comparisons
-Version: 0.0.5
+Version: 0.0.6
 Authors@R: 
     person(given = "Max",
            family = "Westphal",
            role = c("aut", "cre"),
-           email = "max.westphal@uni-bremen.de",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           email = "mwestphal@uni-bremen.de",
+           comment = c(ORCID = "0000-0002-8488-758X"))
 Description: Perform multiple comparisons in diagnostic accuracy studies with co-primary endpoints.
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

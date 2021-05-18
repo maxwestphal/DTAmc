@@ -8,6 +8,7 @@
 #' @export
 #'
 #' @examples
+#' @importFrom multcomp contrMat
 define_contrast <- function(type = c("raw", "Dunnett", "Tukey"), comparator=NA){
   type <- match.arg(type)
   

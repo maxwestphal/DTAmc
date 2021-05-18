@@ -8,7 +8,7 @@ index tests (or candidate models) is investigated simultaneously.
 The implemented methods are also applicable in the extended case of more than
 two subpopulations of interest (i.e. multiclass classification problems).
 
-**NOTE: THIS IS AN EARLY DEVELOPMENT VERSION. NOT RECOMMENDED FOR SERIOUS APPLICATION.**
+**NOTE: THIS IS AN EARLY DEVELOPMENT VERSION. VALIDITY OF RESULTS IS NOT GUARANTEED!**
 
 
 ---

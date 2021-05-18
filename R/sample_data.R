@@ -48,6 +48,7 @@ sample_data_prob <- function(n = 100,
   ))
 }
 
+#' @importFrom extraDistr rmnom
 sample_ng <- function(n = 100,
                       prev = c(0.5, 0.5),
                       random = FALSE) {
