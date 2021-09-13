@@ -3,28 +3,30 @@
 #' This function allows to split continuous (bio)markers into two or more categories 
 #' by specifying one or more cutoff values.
 #' 
-#' @param markers numeric matrix of continuous (bio)markers to be thresholded.
-#' Assume an (n x r) matrix with n observations (subjects) of m continuous markers.
-#' @param cutoffs numeric matrix of dimension L x K. Each row of cutoffs defines a split
-#' into K+1 distinct categories. Each row must contain distinct values. In the simplest case,
+#' @param markers numeric matrix of continuous (bio)markers to be categorized.
+#' Assume an (n x r) matrix with n observations (subjects) of r continuous markers.
+#' @param cutoffs numeric matrix of dimension r x k. Each row of cutoffs defines a split
+#' into k+1 distinct categories. Each row must contain distinct values. In the simplest case,
 #' cutoffs is a single column matrix whereby is row defines a binary split (<=t vs. >t).
-#' In this case (K=1), cutoffs can also be a numeric vector.
-#' @param map integer vector of length L with values in 1:r, whereby r = ncol(markers).
-#' map_l gives the value which column of markers should be tresholded by ...
+#' In this case (k=1), cutoffs can also be a numeric vector.
+#' @param map integer vector of length k with values in 1:r, whereby r = ncol(markers).
+#' map_l gives the value which column of markers should be categorized by ...
 #'
-#' @return numeric (n x L) matrix with categorical outcomes after thresholding
+#' @return numeric (n x k) matrix with categorical outcomes after categorizing.
 #' @export
 #'
 #' @examples
-# set.seed(123)
-# M <- as.data.frame(mvtnorm::rmvnorm(20, mean=rep(0, 3), sigma=2*diag(3)))
-# M
-# threshold(M)
-# C <- matrix(rep(c(-1, 0, 1, -2, 0, 2), 3), ncol=3, byrow = TRUE)
-# C
-# w <- c(1, 1, 2, 2, 3, 3)
-# threshold(M, C, w)
-threshold <- function(markers, cutoffs=rep(0, ncol(markers)), map=1:ncol(markers)){
+#' set.seed(123)
+#' M <- as.data.frame(mvtnorm::rmvnorm(20, mean=rep(0, 3), sigma=2*diag(3)))
+#' M
+#' threshold(M)
+#' C <- matrix(rep(c(-1, 0, 1, -2, 0, 2), 3), ncol=3, byrow = TRUE)
+#' C
+#' w <- c(1, 1, 2, 2, 3, 3)
+#' threshold(M, C, w)
+threshold <- function(markers,
+                      cutoffs=rep(0, ncol(markers)),
+                      map=1:ncol(markers)){
   stopifnot(is.matrix(cutoffs) | is.numeric(cutoffs))
   cutoffs <- as.matrix(cutoffs)
   if(!all(apply(cutoffs, 1, function(x) length(x) == length(unique(x))))){

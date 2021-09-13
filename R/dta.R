@@ -3,11 +3,9 @@
 #' Assess classification accuracy of multiple classifcation rules stratified 
 #' by subpopulation, in the simplest case diseased and healthy individuals.
 #'
-#' @param data nxm binary matrix or data.frame (n observations of m binary decisions). 
-#' Data should have values 0 (incorrect prediction) or 1 (correct prediction). 
-#' \link{compare} provides a simple way to match predictions against true labels.
-#' Alternatively, data can be a list of such arrays (all with m columns) defining different subsamples.
-#' @param contrast specify contrast via \link{define_contrast}
+#' @param data list of n_g x m binary matrix or data.frame (n_g observations of m binary decisions),
+#' g is the index of subgroups/classes, usually created via \code{\link{compare}}.
+#' @param contrast \code{DTAmc_contrast} object, specified via \code{\link{define_contrast}}
 #' @param benchmark value to compare against (RHS), should have same length as data.
 #' @param alpha numeric, significance level (default: 0.05)
 #' @param alternative character, specify alternative hypothesis
@@ -19,7 +17,7 @@
 #' @param pars further parameters given as named list
 #' @param ... additional named parameters
 #'
-#' @return DTAmcResults object, which is a list of analysis results
+#' @return DTAmc_results object, which is a list of analysis results
 #' @details 
 #' Adjustment methods:
 #' - "none" (default): no adjustment for multiplicity
@@ -37,8 +35,10 @@
 #'
 #' @export
 #'
-#' @examples
-dta <- function(data = sample_data(seed=1337),
+#' @examples#
+#' data <- sample_data_roc()
+#' dta(data)
+dta <- function(data,
                 contrast = define_contrast("raw"),
                 benchmark = 0.75, 
                 alpha = 0.025,
@@ -62,7 +62,7 @@ dta <- function(data = sample_data(seed=1337),
   }
   
   ## check 'contrast' argument:
-  stopifnot("contrastFun" %in% class(contrast))
+  stopifnot("DTAmc_contrast" %in% class(contrast))
   
   ## check 'benchmark' argument:
   if(! (length(benchmark) %in% c(1, length(data)))){
@@ -97,7 +97,9 @@ dta <- function(data = sample_data(seed=1337),
   ## calculate & label result:
   out <- do.call(paste0("dta_", match.arg(adjustment)), args)
   names(out) <- names(data)
-  class(out) <- append(class(out), "DTAmcResults")
+  class(out) <- append(class(out), "DTAmc_results")
   
   return(out)
 }
+
+## TODO: add confidence regions

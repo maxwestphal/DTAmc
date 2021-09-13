@@ -7,9 +7,11 @@
 sample_data_prob(n = 100, prob = c(0.8, 0.8), R = diag(length(prob)))
 }
 \arguments{
-\item{n}{}
+\item{n}{integer, sample size}
 
-\item{R}{}
+\item{prob}{numeric, vector with marginal success probabilities}
+
+\item{R}{matrix, square correlation matrix}
 }
 \description{
 Sample binary data (one sample)

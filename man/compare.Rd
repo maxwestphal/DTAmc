@@ -12,17 +12,23 @@ compare(
 )
 }
 \arguments{
-\item{predictions}{}
+\item{predictions}{integer, predicted class}
 
-\item{labels}{}
+\item{labels}{integer, true class state (reference standard)}
 
-\item{partition}{}
+\item{partition}{logical, should result be split into one matrix per class (TRUE; default) or not (FALSE)}
 
-\item{names}{}
+\item{names}{integer (named), values give data values, names give class names}
 }
 \value{
 
 }
 \description{
 Compare predictions and labels
+}
+\examples{
+pred <- matrix(c(1,1,0), 5, 3)
+labels <- c(1, 1, 0, 0, 1)
+compare(pred, labels, FALSE)
+compare(pred, labels, TRUE)
 }

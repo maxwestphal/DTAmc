@@ -16,38 +16,42 @@ sample_data_lfc(
   Rse = diag(rep(1, m)),
   Rsp = diag(rep(1, m)),
   modnames = paste0("model", 1:m),
-  seed = NULL,
   ...
 )
 }
 \arguments{
-\item{n}{}
+\item{n}{integer, total sample size}
 
-\item{prev}{}
+\item{prev}{numeric, disease and healthy prevalence (adds up to 1)}
 
-\item{random}{}
+\item{random}{logical, random sampling (TRUE) or fixed prevalence (FALSE)}
 
-\item{m}{}
+\item{m}{integer, number of models}
 
-\item{se}{}
+\item{se}{numeric, sensitivity (length 1)}
 
-\item{sp}{}
+\item{sp}{numeric, specificity (length 1)}
 
-\item{L}{}
+\item{B}{integer, between 1 and m, specifies how many sensitivity values are projected to 1}
 
-\item{Rse}{}
+\item{L}{numeric, worst alternative is computed under side condition Acc <= L
+(default value L=1 corresponds to true LFC where values are projected to 1)}
 
-\item{Rsp}{}
+\item{Rse}{matrix, correlation matrix for empirical sensitivities (m x m)}
 
-\item{seed}{}
+\item{Rsp}{matrix, correlation matrix for empirical specificities (m x m)}
+
+\item{modnames}{character, model names (length m)}
 
 \item{...}{}
-
-\item{b}{}
 }
 \value{
 
 }
 \description{
 Sample binary data (LFC model)
+}
+\examples{
+data <- sample_data_lfc()
+head(data)
 }

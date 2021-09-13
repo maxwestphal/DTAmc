@@ -48,8 +48,10 @@ cv_uni <- function(alpha = 0.05,
 pval_uni <- function(tstat, alternative = "two.sided"){
   switch(
     alternative,
-    two.sided = pnorm(abs(tstat), lower.tail = FALSE), # TODO: check
+    two.sided = pnorm(abs(tstat), lower.tail = FALSE), 
     less = pnorm(-tstat, lower.tail = FALSE),
     greater = pnorm(tstat, lower.tail = FALSE)
   )
 }
+
+# TODO: pval_uni - check correctness

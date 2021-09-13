@@ -1,6 +1,6 @@
 Package: DTAmc
 Title: Diagnostic Test Accuracy studies with multiple comparisons
-Version: 0.0.6
+Version: 0.0.7
 Authors@R: 
     person(given = "Max",
            family = "Westphal",
@@ -12,7 +12,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Imports: 
     magrittr
 Suggests: 

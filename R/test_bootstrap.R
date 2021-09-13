@@ -2,7 +2,7 @@ cv_bootstrap <- function(alpha, alternative, bst){
   if(any(!is.finite(bst))){
     message(paste0("Attention: ", sum(!is.finite(bst)), " bootstrap sample statistics (" ,
                    100*mean(!is.finite(bst)) , "%) are not finite!"))
-  } # TODO
+  }
   
   cv <- quantile(bst, 1-alpha, na.rm=TRUE)
   
@@ -21,7 +21,8 @@ pval_bootstrap <- function(bst){
   }
 }
 
-alpha_bootstrap <- function(alpha, alternative, bst){ # TODO
+# TODO: alpha_bootstrap
+alpha_bootstrap <- function(alpha, alternative, bst){ 
   NA
 }
 
@@ -30,7 +31,6 @@ alpha_bootstrap <- function(alpha, alternative, bst){ # TODO
 bootstrap_sample <- function(data, contrast, regu, alternative, pars){
   pars$type <- ifelse(is.null(pars$type), "pairs", pars$type)
   pars$nboot <- ifelse(is.null(pars$nboot), 2000, pars$nboot)
-  pars$variant <- ifelse(is.null(pars$variant ), "lfc", pars$variant ) # TODO: ?!?
   
   stopifnot(pars$type %in% c("pairs", "wild"))
   stopifnot(pars$nboot %% 1 == 0)
@@ -51,12 +51,6 @@ bootstrap_sample_pairs <- function(data, contrast, regu=c(0,0,0),
                                    alternative="greater", pars=list(nboot=2000)){
   G <- length(data); ng=sapply(data, nrow)
   mu0 <- stats2est(data2stats(data, contrast, regu))
-  # pars=list(type="pairs", nboot=5000)
-  # TODO: remove variant completely?!?
-  # if(pars$variant == "max"){
-  #   y <- max(do.call(pmin, args=mu0))
-  #   mu0 <- lapply(1:G, function(g) rep(y, m))
-  # }
   sapply(1:pars$nboot, function(b){
     st <- data2stats(bs_draw_pairs(data, G=G, ng=ng), contrast, regu);
     tstat_cpe(stats2est(st), stats2tstat(st, mu0, alternative)) %>% max()
@@ -81,9 +75,9 @@ bootstrap_sample_wild <- function(data, contrast, regu=c(0,0,0),
   pars$dist <- ifelse(is.null(pars$dist), "Normal", pars$dist)
   pars$res_tra <- ifelse(is.null(pars$res_tra), 0, pars$res_tra)
   
-  ## TODO: wild BS should only work with regu=c(2,1,?) or c(0,0,?)
   ## insert pseudo obs
-  if(!all(regu==0)){
+  if(regu[1] != 0){
+    warning("regu should be either c(0,0,?) or c(2,1,?). Switched to second case, as regu[1] != 0!")
     data <- lapply(data, function(d){
       rbind(d, 0, 1)
     })
@@ -92,11 +86,6 @@ bootstrap_sample_wild <- function(data, contrast, regu=c(0,0,0),
   
   mu0_raw <- stats2est(data2stats(data, contrast=define_contrast("raw"), regu))
   mu0 <- lapply(mu0_raw, function(x) as.numeric(contrast(data) %*% x))
-  ## TODO: needed?
-  # if(pars$variant == "max"){
-  #   y <- max(do.call(pmin, args=mu0))
-  #   mu0 <- lapply(1:G, function(g) rep(y, m))
-  # }
   
   M <- lapply(1:G, function(g){
     matrix(mu0_raw[[g]], nrow=ng[g], ncol=length(mu0_raw[[g]]), byrow=TRUE)
@@ -146,8 +135,10 @@ res_transform <- function(x, h=rep(1/nrow(x), nrow(x)), res_tra=0){
     return(matrix( (1-h)^(-1), nrow=nrow(x), ncol=ncol(x), byrow=FALSE) * x)
   }
   stop("pars$res_tra needs to be 0,1,2 or 3.")
-} # TODO: 1 and 2 equivalent?
+} 
 
+# TODO: res_tra: 1 and 2 equivalent?
+# TODO: move literature details to documentation
 ## LITERATURE:
 # https://www.math.kth.se/matstat/gru/sf2930/papers/wild.bootstrap.pdf
 # https://halshs.archives-ouvertes.fr/halshs-00175910/document

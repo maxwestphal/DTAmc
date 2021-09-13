@@ -87,9 +87,11 @@ pval_maxt <- function(R){
              mvtnorm::pmvnorm(lower = rep(-abs(x), m), upper = rep(abs(x), m), corr=R)[1]),
            less = sapply(tstat, function(x) 
              mvtnorm::pmvnorm(lower = rep(-Inf, m), upper = rep(x, m), corr=R)[1]))
-  } # TODO: correct pvals? NO, compare: dta(adj="maxt", regu=T)
+  } 
 }
+# TODO: pval_maxt - correct pvals? NO, compare: dta(adj="maxt", regu=T)
 
-alpha_maxt <- function(alpha, alternative, R){ # TODO
+alpha_maxt <- function(alpha, alternative, R){ 
   NA
 }
+# TODO: alpha_maxt

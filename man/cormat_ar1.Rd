@@ -20,3 +20,6 @@ indicate active/inactive components of underlying random vector.}
 \description{
 Create an AR(1) correlation matrix
 }
+\examples{
+cormat_ar1(m=4, rho=0.7)
+}

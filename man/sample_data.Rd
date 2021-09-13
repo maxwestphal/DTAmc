@@ -10,25 +10,32 @@ sample_data(
   random = FALSE,
   m = 10,
   method = c("roc", "lfc", "prob"),
-  seed = NULL,
   pars = list(),
   ...
 )
 }
 \arguments{
-\item{n}{overall sample size}
+\item{n}{integer, overall sample size}
 
-\item{prev}{prevalence}
+\item{prev}{numeric, vector of class prevalences (adding up to 1)}
 
-\item{random}{random sampling (TRUE) or fixed group sample sizes}
+\item{random}{logical, random sampling (TRUE) or fixed group sample sizes}
 
-\item{m}{number of models}
+\item{m}{integer, number of models}
 
-\item{method}{either "roc", "lfc" (multiple subsamples) or "prob" (no subsamples)}
+\item{method}{character, either "roc", "lfc" (multiple subgroups) or "prob" (no subgroups)}
+
+\item{pars}{list, containing further named parameters passed to \code{\link{sample_data_roc}},
+\code{\link{sample_data_lfc}} or \code{\link{sample_data_prob}}}
+
+\item{...}{further named parameters passed}
 }
 \value{
-
+generated binary data (possibly stratified for subgroups)
 }
 \description{
 Sample binary data
+}
+\examples{
+sample_data()
 }
