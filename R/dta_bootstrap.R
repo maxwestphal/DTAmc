@@ -26,8 +26,3 @@ dta_bootstrap <- function(data = sample_data(seed=1337),
     ) %>% 
     return()
 }
-
-
-# Helpers -------------------------------------------------------------------------------------
-
-# TODO: move test_boostrap here

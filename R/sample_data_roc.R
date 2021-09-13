@@ -1,23 +1,25 @@
 #' Sample binary data (ROC model)
 #'
-#' @param m 
-#' @param auc 
-#' @param rho 
-#' @param delta 
-#' @param e 
-#' @param k 
-#' @param corrplot 
+#' @param m integer, number of models
+#' @param auc numeric, vector of AUCs of biomarkers
+#' @param rho numeric, vector (length 2) of correlations between biomarkers
+#' @param delta numeric, specify importance of sensitivity and specificity (default 0)
+#' @param e numeric, emulates better (worse) model selection quality with higher (lower) values of e
+#' @param k integer, technical parameter which adjusts grid size, can stay at default (1000)
 #' @param ... 
-#' @param n 
-#' @param prev 
-#' @param random 
-#' @param modnames 
-#' @param seed 
+#' @param n integer, total sample size
+#' @param prev numeric, disease and healthy prevalence (adds up to 1)
+#' @param random logical, random sampling (TRUE) or fixed prevalence (FALSE)
+#' @param modnames character, model names (length m)
+#' @param corrplot logical (default: FALSE), if TRUE do not return data but instead plot correlation
+#' matrices for final binary data
 #'
 #' @return
 #' @export
 #'
-#' @examples
+#' @examples 
+#' data <- sample_data_roc()
+#' head(data)
 #' @importFrom corrplot corrplot
 sample_data_roc <- function(n = 100,
                             prev = c(0.5, 0.5),
@@ -29,13 +31,8 @@ sample_data_roc <- function(n = 100,
                             k = 100,
                             delta = 0,
                             modnames = paste0("model", 1:m),
-                            seed = NULL,
                             corrplot = FALSE,
                             ...) {
-  
-  if(!is.null(seed)){
-    set.seed(seed)
-  }
   
   ng <- sample_ng(n, prev, random)
   stopifnot(length(ng) == 2)

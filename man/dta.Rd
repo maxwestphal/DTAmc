@@ -5,7 +5,7 @@
 \title{Analysis for Diagnostic Test Accuracy studies with multiple index tests.}
 \usage{
 dta(
-  data = sample_data(seed = 1337),
+  data,
   contrast = define_contrast("raw"),
   benchmark = 0.75,
   alpha = 0.025,
@@ -18,12 +18,10 @@ dta(
 )
 }
 \arguments{
-\item{data}{nxm binary matrix or data.frame (n observations of m binary decisions).
-Data should have values 0 (incorrect prediction) or 1 (correct prediction).
-\link{compare} provides a simple way to match predictions against true labels.
-Alternatively, data can be a list of such arrays (all with m columns) defining different subsamples.}
+\item{data}{list of n_g x m binary matrix or data.frame (n_g observations of m binary decisions),
+g is the index of subgroups/classes, usually created via \code{\link{compare}}.}
 
-\item{contrast}{specify contrast via \link{define_contrast}}
+\item{contrast}{\code{DTAmc_contrast} object, specified via \code{\link{define_contrast}}}
 
 \item{benchmark}{value to compare against (RHS), should have same length as data.}
 
@@ -44,7 +42,7 @@ Alternatively, logical of length one (TRUE := c(2, 1, 1/2), FALSE := c(0, 0, 0))
 \item{...}{additional named parameters}
 }
 \value{
-DTAmcResults object, which is a list of analysis results
+DTAmc_results object, which is a list of analysis results
 }
 \description{
 Assess classification accuracy of multiple classifcation rules stratified
@@ -68,4 +66,9 @@ Additional parameters to be adjusted via 'pars=list(par1=val1, par2=val2, ...)',
 \item res_tra = 0,1,2 or 3 = type of residual transformation of wild boostrap (default = 0: no transformation)
 (see https://www.math.kth.se/matstat/gru/sf2930/papers/wild.bootstrap.pdf)
 }
+}
+\examples{
+#
+data <- sample_data_roc()
+dta(data)
 }

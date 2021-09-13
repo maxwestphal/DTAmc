@@ -1,14 +1,18 @@
 #' Compare predictions and labels
 #'
-#' @param predictions 
-#' @param labels 
-#' @param partition 
-#' @param names 
+#' @param predictions integer, predicted class
+#' @param labels integer, true class state (reference standard)
+#' @param partition logical, should result be split into one matrix per class (TRUE; default) or not (FALSE)
+#' @param names integer (named), values give data values, names give class names
 #'
 #' @return
 #' @export
 #'
 #' @examples
+#' pred <- matrix(c(1,1,0), 5, 3)
+#' labels <- c(1, 1, 0, 0, 1)
+#' compare(pred, labels, FALSE)
+#' compare(pred, labels, TRUE)
 compare <- function(predictions,
                     labels, 
                     partition = TRUE,

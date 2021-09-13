@@ -1,23 +1,23 @@
 #' Sample binary data
 #'
-#' @param n overall sample size
-#' @param m number of models
-#' @param prev prevalence
-#' @param random random sampling (TRUE) or fixed group sample sizes
-#' @param method either "roc", "lfc" (multiple subsamples) or "prob" (no subsamples)
-#' @param seed
-#' @param pars
-#' @param ...
-#' @return
+#' @param n integer, overall sample size
+#' @param m integer, number of models
+#' @param prev numeric, vector of class prevalences (adding up to 1)
+#' @param random logical, random sampling (TRUE) or fixed group sample sizes
+#' @param method character, either "roc", "lfc" (multiple subgroups) or "prob" (no subgroups)
+#' @param pars list, containing further named parameters passed to \code{\link{sample_data_roc}},
+#'  \code{\link{sample_data_lfc}} or \code{\link{sample_data_prob}}
+#' @param ... further named parameters passed 
+#' 
+#' @return generated binary data (possibly stratified for subgroups)
 #' @export
 #'
-#' @examples
+#' @examples sample_data()
 sample_data <- function(n = 200,
                         prev = c(0.5, 0.5),
                         random = FALSE,
                         m = 10,
                         method = c("roc", "lfc", "prob"),
-                        seed = NULL,
                         pars = list(),
                         ...) {
   method <- match.arg(method)
@@ -30,10 +30,11 @@ sample_data <- function(n = 200,
 
 #' Sample binary data (one sample)
 #'
-#' @param n
-#'
-#' @param prob
-#' @param R
+#' @param n integer, sample size
+#' @param prob numeric, vector with marginal success probabilities
+#' @param R matrix, square correlation matrix
+#' 
+#' @export
 #'
 #' @importFrom bindata rmvbin
 sample_data_prob <- function(n = 100,

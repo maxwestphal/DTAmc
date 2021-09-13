@@ -1,22 +1,25 @@
 #' Sample binary data (LFC model)
 #'
-#' @param n 
-#' @param prev 
-#' @param random 
-#' @param m 
-#' @param se 
-#' @param sp 
-#' @param b 
-#' @param L 
-#' @param Rse 
-#' @param Rsp 
-#' @param seed 
+#' @param n integer, total sample size
+#' @param prev numeric, disease and healthy prevalence (adds up to 1)
+#' @param random logical, random sampling (TRUE) or fixed prevalence (FALSE)
+#' @param m integer, number of models
+#' @param se numeric, sensitivity (length 1)
+#' @param sp numeric, specificity (length 1)
+#' @param B integer, between 1 and m, specifies how many sensitivity values are projected to 1 
+#' @param L numeric, worst alternative is computed under side condition Acc <= L
+#' (default value L=1 corresponds to true LFC where values are projected to 1)
+#' @param Rse matrix, correlation matrix for empirical sensitivities (m x m)
+#' @param Rsp matrix, correlation matrix for empirical specificities (m x m)
+#' @param modnames character, model names (length m)
 #' @param ... 
 #'
 #' @return
 #' @export
 #'
 #' @examples
+#' data <- sample_data_lfc()
+#' head(data)
 sample_data_lfc <- function(n = 100,
                             prev = c(0.5, 0.5),
                             random = FALSE,
@@ -28,14 +31,9 @@ sample_data_lfc <- function(n = 100,
                             Rse = diag(rep(1, m)),
                             Rsp = diag(rep(1, m)),
                             modnames = paste0("model", 1:m),
-                            seed = NULL,
                             ...
 )
 {
-  if(!is.null(seed)){
-    set.seed(seed)
-  }
-  
   ng <- sample_ng(n, prev, random)
   stopifnot(length(ng) == 2)
   
@@ -69,7 +67,6 @@ sample_data_lfc <- function(n = 100,
   
   if(! all(rbind(comp0, comp1) %in% 0:1)){stop("Something went wrong!!!")}
 
-  #########################
   ## true parameters values
   info <- data.frame(
     model = modnames,

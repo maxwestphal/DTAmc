@@ -10,6 +10,7 @@ dta_mbeta <- function(data = sample_data(seed=1337),
   
   stopifnot(transformation == "none")
   nrep <- ifelse(is.null(pars$nrep), 5000, pars$nrep)
+  lfp <- ifelse(is.null(pars$lfp), 1, pars$lfp)
   
   G <- length(data)
   m <- ncol(data[[1]])
@@ -20,19 +21,20 @@ dta_mbeta <- function(data = sample_data(seed=1337),
   stats <- data2stats(data, contrast, regu, raw=TRUE)
   
   ## posterior sample:
-  pss <- sample_mbeta(moms) %>% transform_sample(tr=function(s){s %*% contrast(data)})
+  pss <- sample_mbeta(moms) %>%
+    transform_sample(tr=function(s){s %*% contrast(data)})
   
   ## credible region:
   qstar <- uniroot(f=eval_cr, interval=c(0, 0.5),
                    moms=moms, pss=pss, type=type,
-                   alpha=alpha, alternative=alternative)$root
+                   alpha=alpha, alternative=alternative, lfp=lfp)$root
   crs <- get_cr(moms, pss, type=type, q=qstar, alternative=alternative) 
   
   ## output:
   lapply(1:G, function(g) {
     data.frame(
       parameter = stats[[g]]$names,
-      alternative = altstr(alternative, benchmark),
+      alternative = altstr(alternative, benchmark[g]),
       estimate = stats[[g]]$est,
       lower = crs[[g]]$lower,
       upper = crs[[g]]$upper,
@@ -42,7 +44,7 @@ dta_mbeta <- function(data = sample_data(seed=1337),
     setattr(
       n = sapply(data, nrow), m=m, 
       alpha=alpha, alpha_adj=qstar, cv=NA,
-      class = c("list", "DTAmcResults")
+      class = c("list", "DTAmc_results")
     ) %>% 
     return()
 }
@@ -50,26 +52,30 @@ dta_mbeta <- function(data = sample_data(seed=1337),
 
 
 # Helper functions ----------------------------------------------------------------------------
-
-eval_cr <- function(q, moms, pss, type, alpha, alternative){
+eval_cr <- function(q, moms, pss, type, alpha, alternative, lfp=1){
   crs <- get_cr(moms, pss, type, q, alternative)
-  coverage(crs, pss) - (1-alpha)
+  coverage(crs, pss, lfp) - (1-alpha)
 }
 
-coverage <- function(crs, pss){
+coverage <- function(crs, pss, lfp=1){
   nrep <- nrow(pss[[1]]); m <- ncol(pss[[1]]); G <- length(pss)
 
   L <- lapply(crs, function(x) matrix(x$lower, nrow=nrep, ncol=m, byrow=TRUE))
   U <- lapply(crs, function(x) matrix(x$upper, nrow=nrep, ncol=m, byrow=TRUE))
-
+  
   C <- lapply(1:G, function(g) covered(pss[[g]], L[[g]], U[[g]]))
-  W <- matrix(sample(1:G, nrep*m, replace=TRUE), nrow=nrep, ncol=m, byrow=TRUE)
-
-  mean(apply(Reduce("+", lapply(1:G, function(g) (W==g)*C[[g]])), 1, min) == 1)
+  
+  mean(apply(Reduce("+", postproc(C, nrep, m, G, lfp)), 1, min) >= 1)
 }
 
-
-
+postproc <- function(C, nrep, m, G, lfp=1){
+  ## 'split prior' approach (1-lfp prior mass normal, lfpr prior mass on 'LFC'):
+  matrix(sample(0:1, nrep*m, replace=TRUE, prob=c(1-lfp, lfp))* 
+                sample(1:G, nrep*m, replace=TRUE),
+              nrow=nrep, ncol=m, byrow=FALSE) %>% 
+    {lapply(1:G, function(g) (.==g | .==0) * C[[g]] )}
+}
+# TODO: document this in dta_mbeta
 
 covered <- function(S, L, U){
   S >= L & S <= U
@@ -78,6 +84,7 @@ covered <- function(S, L, U){
 sample_mbeta <- function(moms, nrep=5000, proj.pd=FALSE){
   lapply(moms, function(mom) sample_mbeta1(mom, nrep, proj.pd))
 }
+
 
 #' @importFrom  MCMCpack rdirichlet
 #' @importFrom  copula normalCopula

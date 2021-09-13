@@ -23,7 +23,7 @@ mom2cov <- function(mom){
   n <- mom[[1]]
   A <- mom[[2]]
   a <- diag(A)
-  return((n*A - (a %*% t(a))) / (n^2) / (n+1)) ## TODO: check correctness
+  return((n*A - (a %*% t(a))) / (n^2) / (n+1)) ## TODO: double check correctness
 }
 
 cov2var <- function(cov){
@@ -56,11 +56,6 @@ dat2se <- function(dat, regu=c(0,0,0)){
   sqrt(dat2var(dat, regu))
 }
 
-# dat2cov <- function(dat){
-#   cov(dat)/nrow(dat)
-# }
-
-
 ## calculations based on stats
 stats2est <- function(stats){
   lapply(stats, function(s) s$est)
@@ -70,7 +65,7 @@ stats2tstat <- function(stats, mu0, alternative="greater"){
   stopifnot(is.list(stats))
   G <- length(stats)
   m <- length(stats[[1]]$est)
-  #stopifnot(length(mu0) == G) # TODO: not needed, as block after?!
+  
   if(is.numeric(mu0)){
     mu0 <- lapply(1:G, function(g) rep(mu0[g], m))
   }
@@ -92,11 +87,6 @@ tstat_tr <- function(x, alternative="greater"){
 nan2zero <- function(x){
   x[is.nan(x)] <- 0
   return(x)
-}
-
-## TODO: needed at all?
-b2bb <- function(b, G=1:2){
-  lapply(G, function(x) as.numeric(b==x))
 }
 
 tstat_cpe <- function(est, tstat){

@@ -2,9 +2,7 @@
 
 DTAmc is an R package to perform statistical analysis for Diagnostic Test Accuracy
 (DTA) studies with co-primary endpoints sensitivity and specificity. 
-In particular,
-it allows for multiplicity corrections when the diagnostic accuracy of multiple 
-index tests (or candidate models) is investigated simultaneously. 
+In particular, it allows for multiplicity corrections when the diagnostic accuracy of multiple index tests (or candidate prediction models) is investigated simultaneously. 
 The implemented methods are also applicable in the extended case of more than
 two subpopulations of interest (i.e. multiclass classification problems).
 
@@ -36,4 +34,4 @@ vignette("DTAmc")
 
 ## References
 
-- Max Westphal, Antonia Zapf, 2021, Statistical Inference for Diagnostic Test Accuracy Studies with Multiple Comparisons, in preparation.
+- [Westphal, Max, and Antonia Zapf. "Statistical Inference for Diagnostic Test Accuracy Studies with Multiple Comparisons." arXiv preprint arXiv:2105.13469 (2021).](https://arxiv.org/abs/2105.13469)

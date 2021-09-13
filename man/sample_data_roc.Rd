@@ -15,35 +15,33 @@ sample_data_roc(
   k = 100,
   delta = 0,
   modnames = paste0("model", 1:m),
-  seed = NULL,
   corrplot = FALSE,
   ...
 )
 }
 \arguments{
-\item{n}{}
+\item{n}{integer, total sample size}
 
-\item{prev}{}
+\item{prev}{numeric, disease and healthy prevalence (adds up to 1)}
 
-\item{random}{}
+\item{random}{logical, random sampling (TRUE) or fixed prevalence (FALSE)}
 
-\item{m}{}
+\item{m}{integer, number of models}
 
-\item{auc}{}
+\item{auc}{numeric, vector of AUCs of biomarkers}
 
-\item{rho}{}
+\item{rho}{numeric, vector (length 2) of correlations between biomarkers}
 
-\item{e}{}
+\item{e}{numeric, emulates better (worse) model selection quality with higher (lower) values of e}
 
-\item{k}{}
+\item{k}{integer, technical parameter which adjusts grid size, can stay at default (1000)}
 
-\item{delta}{}
+\item{delta}{numeric, specify importance of sensitivity and specificity (default 0)}
 
-\item{modnames}{}
+\item{modnames}{character, model names (length m)}
 
-\item{seed}{}
-
-\item{corrplot}{}
+\item{corrplot}{logical (default: FALSE), if TRUE do not return data but instead plot correlation
+matrices for final binary data}
 
 \item{...}{}
 }
@@ -52,4 +50,8 @@ sample_data_roc(
 }
 \description{
 Sample binary data (ROC model)
+}
+\examples{
+data <- sample_data_roc()
+head(data)
 }

@@ -1,8 +1,7 @@
 #' Define a contrast (matrix) to specify exact hypothesis system
 #'
-#' @param type c("Raw", "Dunnett", "Tukey")
-#' @param comparator either integer (index of comparator model/rule) or character (comparator name)
-#' or character (name of rule to use for )
+#' @param type character, either "Raw", "Dunnett" or "Tukey")
+#' @param comparator either integer (index of comparator) or character (name of comparator)
 #'
 #' @return \code{DTAmc_contrast} object to be passed to \code{\link{dta}}
 #' @export
