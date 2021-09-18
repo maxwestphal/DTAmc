@@ -6,9 +6,6 @@
 #' indicate active/inactive components of underlying random vector. 
 #'
 #' @return \eqn{R_{ij} = \rho, i\neq j}
-#'
-#' @examples
-#' cormat_equi(m=4, rho=0.7)
 cormat_equi <- function(m, rho, d=TRUE){
   R <- matrix(rho, m, m)
   stopifnot(length(d) %in% c(1, m))
@@ -25,9 +22,6 @@ cormat_equi <- function(m, rho, d=TRUE){
 #' indicate active/inactive components of underlying random vector. 
 #'
 #' @return \eqn{R_{ij} = \rho^{|i-j|}}
-#'
-#' @examples
-#' cormat_ar1(m=4, rho=0.7)
 cormat_ar1 <- function(m, rho, d=TRUE){
   M <- matrix(rho, m, m)
   R <- M^(abs(col(M) - row(M)))
