@@ -1,4 +1,4 @@
-study_dta_mbeta <- function(data = sample_data(seed=1337),
+study_dta_mbeta <- function(data = generate_data(seed=1337),
                       contrast = define_contrast("raw"),
                       benchmark = 0.5,
                       alpha = 0.05,
@@ -44,7 +44,7 @@ study_dta_mbeta <- function(data = sample_data(seed=1337),
     setattr(
       n = sapply(data, nrow), m=m, 
       alpha=alpha, alpha_adj=qstar, cv=NA,
-      class = c("list", "DTAmc_results")
+      class = c("list", "DTAmc_result")
     ) %>% 
     return()
 }

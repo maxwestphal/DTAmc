@@ -1,5 +1,6 @@
 ## DTAmc 
 
+[![R-CMD-check](https://github.com/maxwestphal/DTAmc/workflows/R-CMD-check/badge.svg)](https://github.com/maxwestphal/DTAmc/actions)
 [![Codecov test coverage](https://codecov.io/gh/maxwestphal/DTAmc/branch/master/graph/badge.svg)](https://codecov.io/gh/maxwestphal/DTAmc?branch=master)
 
 ## Overview

@@ -46,7 +46,7 @@ Alternatively, logical of length one (TRUE := c(2, 1, 1/2), FALSE := c(0, 0, 0))
 \item{...}{additional named parameters}
 }
 \value{
-DTAmc_results object, which is a list of analysis results
+DTAmc_result object, which is a list of analysis results
 }
 \description{
 Assess classification accuracy of multiple classifcation rules stratified
@@ -73,6 +73,6 @@ Additional parameters to be adjusted via 'pars=list(par1=val1, par2=val2, ...)',
 }
 \examples{
 #
-data <- sample_data_roc()
+data <- generate_data_roc()
 study_dta(data)
 }

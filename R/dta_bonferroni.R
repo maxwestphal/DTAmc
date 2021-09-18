@@ -1,4 +1,4 @@
-study_dta_bonferroni <- function(data = sample_data(seed=1337),
+study_dta_bonferroni <- function(data = generate_data(seed=1337),
                            contrast = define_contrast("raw"),
                            benchmark = 0.5,
                            alpha = 0.05,

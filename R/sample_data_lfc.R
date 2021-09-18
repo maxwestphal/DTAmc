@@ -18,9 +18,9 @@
 #' @export
 #'
 #' @examples
-#' data <- sample_data_lfc()
+#' data <- generate_data_lfc()
 #' head(data)
-sample_data_lfc <- function(n = 100,
+generate_data_lfc <- function(n = 100,
                             prev = c(0.5, 0.5),
                             random = FALSE,
                             m = 10,
@@ -55,12 +55,12 @@ sample_data_lfc <- function(n = 100,
   se.alt <- pmin(1, (L - (1-prev[1])*sp)/(prev[1]))
   
   if(sum( b) > 0){
-    comp0[,  b] <- sample_data_prob(n0, sp[ b], Rsp[ b,  b])
+    comp0[,  b] <- generate_data_prob(n0, sp[ b], Rsp[ b,  b])
     #comp1[,  b] <- matrix(stats::rbinom(n1*sum( b), 1, L), ncol=sum( b))
     comp1[,  b] <- sapply(se.alt[ b], function(p) stats::rbinom(n1, 1, p))
   }
   if(sum(!b) > 0){
-    comp1[, !b] <- sample_data_prob(n1, se[!b], Rse[!b, !b])
+    comp1[, !b] <- generate_data_prob(n1, se[!b], Rse[!b, !b])
     #comp0[, !b] <- matrix(stats::rbinom(n1*sum(!b), 1, L), ncol=sum(!b))
     comp0[, !b] <- sapply(sp.alt[!b], function(p) stats::rbinom(n0, 1, p))
   }
