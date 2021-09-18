@@ -18,10 +18,10 @@
 #' @export
 #'
 #' @examples 
-#' data <- sample_data_roc()
+#' data <- generate_data_roc()
 #' head(data)
 #' @importFrom corrplot corrplot
-sample_data_roc <- function(n = 100,
+generate_data_roc <- function(n = 100,
                             prev = c(0.5, 0.5),
                             random = FALSE,
                             m = 10,
@@ -107,5 +107,5 @@ sample_data_roc <- function(n = 100,
   return(out)
 }
 
-#sample_data_roc()
-#sample_data(pars=list(m=5))
+#generate_data_roc()
+#generate_data(pars=list(m=5))

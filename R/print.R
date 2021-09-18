@@ -1,5 +1,5 @@
 #' @export
-print.DTAmc_results <- function(x, info=FALSE, ...){
+print.DTAmc_result <- function(x, info=FALSE, ...){
   message("Diagnostic Test Accuracy:")
   if(!info){
     n <- names(x)

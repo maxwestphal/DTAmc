@@ -19,7 +19,7 @@
 #' @param co_primary logical, indicates if co-primary endpoint analysis is performed (TRUE; default)
 #' or if accuracy of all subgroups 
 #'
-#' @return DTAmc_results object, which is a list of analysis results
+#' @return DTAmc_result object, which is a list of analysis results
 #' @details 
 #' Adjustment methods:
 #' - "none" (default): no adjustment for multiplicity
@@ -38,7 +38,7 @@
 #' @export
 #'
 #' @examples#
-#' data <- sample_data_roc()
+#' data <- generate_data_roc()
 #' study_dta(data)
 study_dta <- function(data,
                 contrast = define_contrast("raw"),
@@ -100,7 +100,7 @@ study_dta <- function(data,
   ## calculate & label result:
   out <- do.call(paste0("study_dta_", match.arg(adjustment)), args)
   names(out) <- names(data)
-  class(out) <- append(class(out), "DTAmc_results")
+  class(out) <- append(class(out), "DTAmc_result")
   
   return(out)
 }

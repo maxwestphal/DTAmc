@@ -26,7 +26,7 @@ dat2stats <- function(dat, K, regu=c(0,0,0), raw=FALSE){
 
 
 # TESTS ---------------------------------------------------------------------------------------
-#data <- sample_data_lfc()
+#data <- generate_data_lfc()
 # contrast = define_contrast("Dunnett", 1)
 # contrast(data)
 # data2stats(data, contrast)

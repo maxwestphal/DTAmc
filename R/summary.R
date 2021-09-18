@@ -1,5 +1,5 @@
 #' @export
-summary.DTAmc_results <- function(object, ...){ 
+summary.DTAmc_result <- function(object, ...){ 
   cat("\n")
   cat("<> Diagnostic Test Accuracy <> \n")
   
@@ -22,4 +22,4 @@ summary.DTAmc_results <- function(object, ...){
   
 }
 
-## TODO: summary.DTAmc_results
+## TODO: summary.DTAmc_result

@@ -20,6 +20,3 @@ indicate active/inactive components of underlying random vector.}
 \description{
 Create an equicorrelation matrix
 }
-\examples{
-cormat_equi(m=4, rho=0.7)
-}

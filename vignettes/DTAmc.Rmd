@@ -87,21 +87,21 @@ compare(yhat, y)
 Main function of the package
 
 ```{r study_dta1}
-dta(compare(yhat, y))
+study_dta(compare(yhat, y))
 ```
 
 More details on the dta function are provided in the last section
 
-### sample_data()
+### generate_data()
 DTAmc includes a few functions for synthetic data generation
 
-```{r sample_data1}
-sample_data_lfc(n=20)
+```{r generate_data1}
+generate_data_lfc(n=20)
 ```
 
 
-```{r sample_data2}
-sample_data_roc(n=20)
+```{r generate_data2}
+generate_data_roc(n=20)
 ```
 
 Remark: Synthetic data comes at the 'compared' level meaning the labels 1 and 0
@@ -119,7 +119,7 @@ correct (1) and false (0) predictions.
 M %>%
   categorize() %>%
   compare(y) %>%
-  dta()
+  study_dta()
 ```
 
 
@@ -131,7 +131,7 @@ M %>%
 The R command
 
 ```{r dtafun1, eval=FALSE}
-?dta 
+?study_dta 
 ```
 
 gives an overview over the function arguments of the dta function.
@@ -149,6 +149,7 @@ of a medical test or classication rule. In this case we aim to reject the global
 
 $H_0: \forall j: Se_j \leq Se_0 \wedge Sp_j \leq Sp_0$
 
+
 ## References
 
-- Max Westphal, Antonia Zapf, 2021,Statistical Inference forDiagnostic Test Accuracy Studies with MultipleComparisons, in preparation.
+- [Westphal, Max, and Antonia Zapf. "Statistical Inference for Diagnostic Test Accuracy Studies with Multiple Comparisons." arXiv preprint arXiv:2105.13469 (2021).](https://arxiv.org/abs/2105.13469)
