@@ -6,15 +6,15 @@
 #' @param delta numeric, specify importance of sensitivity and specificity (default 0)
 #' @param e numeric, emulates better (worse) model selection quality with higher (lower) values of e
 #' @param k integer, technical parameter which adjusts grid size, can stay at default (1000)
-#' @param ... 
 #' @param n integer, total sample size
 #' @param prev numeric, disease and healthy prevalence (adds up to 1)
 #' @param random logical, random sampling (TRUE) or fixed prevalence (FALSE)
 #' @param modnames character, model names (length m)
 #' @param corrplot logical (default: FALSE), if TRUE do not return data but instead plot correlation
 #' matrices for final binary data
+#' @param ... further arguments (currently unused)
 #'
-#' @return
+#' @return Generated binary dataset
 #' @export
 #'
 #' @examples 
@@ -41,7 +41,7 @@ sample_data_roc <- function(n = 100,
   r <- length(auc)
   G <- length(ng)
   ## mean vector (diseased: 1, healthy: 2):
-  mu1 <- sqrt(2) * qnorm(auc)
+  mu1 <- sqrt(2) * stats::qnorm(auc)
   mu2 <- rep(0, r)
   ## covariance Matrix:
   C1 <- matrix(rho[1], r, r) + diag(1-rho[1], nrow=r, ncol=r)
@@ -50,7 +50,7 @@ sample_data_roc <- function(n = 100,
   S1 <- mvtnorm::rmvnorm(ng[1], mu1, C1)
   S2 <- mvtnorm::rmvnorm(ng[2], mu2, C2)
   ## cutoffs:
-  q <- quantile(rbind(S1, S2), c(0.05, 0.95))
+  q <- stats::quantile(rbind(S1, S2), c(0.05, 0.95))
   cu <- seq(q[1], q[2], length.out = k)
   
   ## derive binary data:
@@ -70,8 +70,8 @@ sample_data_roc <- function(n = 100,
   
   
   ## selection of models
-  theta1 <- 1 - pnorm(rep(cu, r), mean = rep(mu1, each = k))
-  theta2 <- pnorm(rep(cu, r), mean = rep(mu2, each = k))
+  theta1 <- 1 - stats::pnorm(rep(cu, r), mean = rep(mu1, each = k))
+  theta2 <- stats::pnorm(rep(cu, r), mean = rep(mu2, each = k))
   tau <- pmin(theta1, theta2 + delta)
   s <- sort(sample(1:(r * k), m, prob = tau ^ e))
   
@@ -91,8 +91,8 @@ sample_data_roc <- function(n = 100,
   #########################
   ## inspect parameter values:
   if (corrplot) {
-    R1 <- cov2cor(cov(Y1s))
-    R2 <- cov2cor(cov(Y2s))
+    R1 <- stats::cov2cor(stats::cov(Y1s))
+    R2 <- stats::cov2cor(stats::cov(Y2s))
     corrplot::corrplot(R1)
     corrplot::corrplot(R2)
     return(info)

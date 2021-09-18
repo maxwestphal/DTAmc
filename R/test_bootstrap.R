@@ -4,7 +4,7 @@ cv_bootstrap <- function(alpha, alternative, bst){
                    100*mean(!is.finite(bst)) , "%) are not finite!"))
   }
   
-  cv <- quantile(bst, 1-alpha, na.rm=TRUE)
+  cv <- stats::quantile(bst, 1-alpha, na.rm=TRUE)
   
   cv <- switch(alternative,
                greater = c(-cv, Inf), 
@@ -105,10 +105,10 @@ bootstrap_sample_wild <- function(data, contrast, regu=c(0,0,0),
 ## random vector for wild bootstrap
 rv <- function(n=100, dist="Normal"){
   if(dist=="Rademacher"){
-    return((rbinom(n, 1, 1/2)-0.5)*2)
+    return((stats::rbinom(n, 1, 1/2)-0.5)*2)
   }
   if(dist=="Normal"){
-    return(rnorm(n))
+    return(stats::rnorm(n))
   }else{
     stop("argument 'dist' not recognized")
   }

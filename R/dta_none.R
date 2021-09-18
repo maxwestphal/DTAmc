@@ -1,4 +1,4 @@
-dta_none <- function(data = sample_data(seed=1337),
+study_dta_none <- function(data = sample_data(seed=1337),
                      contrast = define_contrast("raw"),
                      benchmark = 0.5,
                      alpha = 0.05,
@@ -32,14 +32,14 @@ cv_uni <- function(alpha = 0.05,
                    ...) {
   c(switch(
     alternative,
-    two.sided = qnorm(alpha / 2),
+    two.sided = stats::qnorm(alpha / 2),
     less = -Inf,
-    greater = qnorm(alpha)
+    greater = stats::qnorm(alpha)
   ),
   switch(
     alternative,
-    two.sided = qnorm(1 - alpha / 2),
-    less = qnorm(1 - alpha),
+    two.sided = stats::qnorm(1 - alpha / 2),
+    less = stats::qnorm(1 - alpha),
     greater = Inf
   )
   )
@@ -48,9 +48,9 @@ cv_uni <- function(alpha = 0.05,
 pval_uni <- function(tstat, alternative = "two.sided"){
   switch(
     alternative,
-    two.sided = pnorm(abs(tstat), lower.tail = FALSE), 
-    less = pnorm(-tstat, lower.tail = FALSE),
-    greater = pnorm(tstat, lower.tail = FALSE)
+    two.sided = stats::pnorm(abs(tstat), lower.tail = FALSE), 
+    less = stats::pnorm(-tstat, lower.tail = FALSE),
+    greater = stats::pnorm(tstat, lower.tail = FALSE)
   )
 }
 

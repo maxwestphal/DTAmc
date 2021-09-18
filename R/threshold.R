@@ -1,4 +1,4 @@
-#' Threshold continuous (bio)markers 
+#' Categorize continuous (bio)markers 
 #' 
 #' This function allows to split continuous (bio)markers into two or more categories 
 #' by specifying one or more cutoff values.
@@ -19,12 +19,12 @@
 #' set.seed(123)
 #' M <- as.data.frame(mvtnorm::rmvnorm(20, mean=rep(0, 3), sigma=2*diag(3)))
 #' M
-#' threshold(M)
+#' categorize(M)
 #' C <- matrix(rep(c(-1, 0, 1, -2, 0, 2), 3), ncol=3, byrow = TRUE)
 #' C
 #' w <- c(1, 1, 2, 2, 3, 3)
-#' threshold(M, C, w)
-threshold <- function(markers,
+#' categorize(M, C, w)
+categorize <- function(markers,
                       cutoffs=rep(0, ncol(markers)),
                       map=1:ncol(markers)){
   stopifnot(is.matrix(cutoffs) | is.numeric(cutoffs))
@@ -39,7 +39,7 @@ threshold <- function(markers,
   
   C <- as.data.frame(matrix(NA, nrow=nrow(markers), ncol=nrow(cutoffs)))
   for(k in 1:nrow(cutoffs)){
-    C[, k] <- threshold1(markers[, map[k]], cutoffs[k, ])
+    C[, k] <- categorize1(markers[, map[k]], cutoffs[k, ])
     if(ncol(cutoffs)==1){
       a <- as.character(cutoffs[k, ])
     }else{
@@ -50,6 +50,6 @@ threshold <- function(markers,
   return(C)
 }
 
-threshold1 <- function(x, cutoffs){
+categorize1 <- function(x, cutoffs){
   sapply(x, function(xi) sum(xi>cutoffs))
 }

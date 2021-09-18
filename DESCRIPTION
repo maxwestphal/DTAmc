@@ -1,6 +1,6 @@
 Package: DTAmc
 Title: Diagnostic Test Accuracy studies with multiple comparisons
-Version: 0.0.7
+Version: 0.0.8
 Authors@R: 
     person(given = "Max",
            family = "Westphal",
@@ -14,8 +14,20 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: 
-    magrittr
+    bindata,
+    boot,
+    copula,
+    corrplot,
+    dplyr,
+    extraDistr,
+    magrittr,
+    Matrix,
+    multcomp,
+    mvtnorm
 Suggests: 
+    testthat (>= 3.0.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    covr
 VignetteBuilder: knitr
+Config/testthat/edition: 3

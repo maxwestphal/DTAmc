@@ -3,7 +3,7 @@
 #' @param type character, either "Raw", "Dunnett" or "Tukey")
 #' @param comparator either integer (index of comparator) or character (name of comparator)
 #'
-#' @return \code{DTAmc_contrast} object to be passed to \code{\link{dta}}
+#' @return \code{DTAmc_contrast} object to be passed to \code{\link{study_dta}}
 #' @export
 #'
 #' @examples 
@@ -49,7 +49,3 @@ define_contrast <- function(type = c("raw", "Dunnett", "Tukey"), comparator=NA){
   class(fun) <- append(class(fun), "DTAmc_contrast")
   return(fun)
 }
-
-
-
-

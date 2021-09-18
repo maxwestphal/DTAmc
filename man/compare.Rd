@@ -21,7 +21,7 @@ compare(
 \item{names}{integer (named), values give data values, names give class names}
 }
 \value{
-
+data matrix with values 1 (correct prediction) and 0 (false prediction)
 }
 \description{
 Compare predictions and labels

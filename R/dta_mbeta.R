@@ -1,4 +1,4 @@
-dta_mbeta <- function(data = sample_data(seed=1337),
+study_dta_mbeta <- function(data = sample_data(seed=1337),
                       contrast = define_contrast("raw"),
                       benchmark = 0.5,
                       alpha = 0.05,
@@ -22,10 +22,10 @@ dta_mbeta <- function(data = sample_data(seed=1337),
   
   ## posterior sample:
   pss <- sample_mbeta(moms) %>%
-    transform_sample(tr=function(s){s %*% contrast(data)})
-  
+    lapply(function(s){s %*% contrast(data)})
+
   ## credible region:
-  qstar <- uniroot(f=eval_cr, interval=c(0, 0.5),
+  qstar <- stats::uniroot(f=eval_cr, interval=c(0, 0.5),
                    moms=moms, pss=pss, type=type,
                    alpha=alpha, alternative=alternative, lfp=lfp)$root
   crs <- get_cr(moms, pss, type=type, q=qstar, alternative=alternative) 
@@ -70,12 +70,17 @@ coverage <- function(crs, pss, lfp=1){
 
 postproc <- function(C, nrep, m, G, lfp=1){
   ## 'split prior' approach (1-lfp prior mass normal, lfpr prior mass on 'LFC'):
-  matrix(sample(0:1, nrep*m, replace=TRUE, prob=c(1-lfp, lfp))* 
-                sample(1:G, nrep*m, replace=TRUE),
-              nrow=nrep, ncol=m, byrow=FALSE) %>% 
-    {lapply(1:G, function(g) (.==g | .==0) * C[[g]] )}
+  # matrix(sample(0:1, nrep*m, replace=TRUE, prob=c(1-lfp, lfp)) * 
+  #               sample(1:G, nrep*m, replace=TRUE),
+  #             nrow=nrep, ncol=m, byrow=FALSE) %>% 
+  #   {lapply(1:G, function(g) {(. %in% c(0, g)) * C[[g]]} )}
+  M <- matrix(sample(0:1, nrep*m, replace=TRUE, prob=c(1-lfp, lfp)) * 
+           sample(1:G, nrep*m, replace=TRUE),
+         nrow=nrep, ncol=m, byrow=FALSE) 
+  lapply(1:G, function(g){(M %in% c(0, g)) * C[[g]]} )
 }
-# TODO: document this in dta_mbeta
+# TODO: document this in study_dta_mbeta
+# TODO: remove old version
 
 covered <- function(S, L, U){
   S >= L & S <= U
@@ -85,8 +90,6 @@ sample_mbeta <- function(moms, nrep=5000, proj.pd=FALSE){
   lapply(moms, function(mom) sample_mbeta1(mom, nrep, proj.pd))
 }
 
-
-#' @importFrom  MCMCpack rdirichlet
 #' @importFrom  copula normalCopula
 #' @importFrom  copula P2p
 #' @importFrom  copula mvdc
@@ -94,7 +97,7 @@ sample_mbeta <- function(moms, nrep=5000, proj.pd=FALSE){
 #' @importFrom  Matrix nearPD
 sample_mbeta1 <- function(mom, nrep=5000, proj.pd = FALSE){
   m <- nrow(mom$moments)
-  R <- cov2cor(mom2cov(mom))
+  R <- stats::cov2cor(mom2cov(mom))
   if(proj.pd){R <- as.matrix(Matrix::nearPD(R)$mat)}
   cop <- copula::normalCopula(param=copula::P2p(R), dim=m, dispstr = "un")
   mp <- margin_params(mom, c("shape1", "shape2"))
@@ -113,9 +116,10 @@ margin_params <- function(mom, n=c("alpha", "beta")){
   })
 }
 
-transform_sample <- function(sample, tr=function(s){s %*% contrast(data)}){
-  lapply(sample, tr)
-}
+# TODO: remove?!
+# transform_sample <- function(sample, tr){
+#   lapply(sample, tr)
+# }
 
 get_cr1 <- function(mom, ps, type="raw", q=0.05, alternative="two.sided"){
   mp <- margin_params(mom); m <- length(mp); s <- c(0,1)
@@ -125,9 +129,9 @@ get_cr1 <- function(mom, ps, type="raw", q=0.05, alternative="two.sided"){
                two.sided = c(q/2, 1-q/2))
   
   if(type=="raw"){
-    cr <- data.frame(t(sapply(1:m, function(j){ qbeta(p, mp[[j]]$alpha, mp[[j]]$beta)})))
+    cr <- data.frame(t(sapply(1:m, function(j){ stats::qbeta(p, mp[[j]]$alpha, mp[[j]]$beta)})))
   }else{
-    cr <- data.frame(t(apply(ps, 2, function(x) quantile(x, probs=p)))) 
+    cr <- data.frame(t(apply(ps, 2, function(x) stats::quantile(x, probs=p)))) 
   }
   colnames(cr) <- c("lower", "upper")
   

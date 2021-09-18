@@ -1,13 +1,11 @@
 #' Create an equicorrelation matrix
 #'
-#'
 #' @param m integer, dimension
 #' @param rho numeric, correlation parameter in (0,1)
 #' @param d binary vector of length m, whereby TRUE/FALSE (alternatively 1/0)
 #' indicate active/inactive components of underlying random vector. 
 #'
 #' @return \eqn{R_{ij} = \rho, i\neq j}
-#' @export
 #'
 #' @examples
 #' cormat_equi(m=4, rho=0.7)
@@ -27,8 +25,6 @@ cormat_equi <- function(m, rho, d=TRUE){
 #' indicate active/inactive components of underlying random vector. 
 #'
 #' @return \eqn{R_{ij} = \rho^{|i-j|}}
-#' 
-#' @export
 #'
 #' @examples
 #' cormat_ar1(m=4, rho=0.7)

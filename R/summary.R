@@ -1,12 +1,12 @@
 #' @export
-summary.DTAmc_results <- function(x){ 
+summary.DTAmc_results <- function(object, ...){ 
   cat("\n")
   cat("<> Diagnostic Test Accuracy <> \n")
   
   cat("\n")
   cat("++ General Information:\n")
-  cat("+  Sample sizes:", x$info$n, "\n")
-  cat("+  Dimension: ", x$info$m, "\n")
+  cat("+  Sample sizes:", object$info$n, "\n")
+  cat("+  Dimension: ", object$info$m, "\n")
   
   cat("\n")
   cat("++ Analysis: \n")

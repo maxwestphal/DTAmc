@@ -23,7 +23,7 @@ argmax <- function(x, rdm=FALSE) {
 }
 
 pargmax <- function(..., args=list(), rdm=FALSE){
-  pargmin(-x, args, rdm)
+  pargmin(..., args, rdm)
 }
 
 

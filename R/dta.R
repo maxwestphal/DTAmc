@@ -16,6 +16,8 @@
 #' Alternatively, logical of length one (TRUE := c(2, 1, 1/2), FALSE := c(0, 0, 0))
 #' @param pars further parameters given as named list
 #' @param ... additional named parameters
+#' @param co_primary logical, indicates if co-primary endpoint analysis is performed (TRUE; default)
+#' or if accuracy of all subgroups 
 #'
 #' @return DTAmc_results object, which is a list of analysis results
 #' @details 
@@ -37,13 +39,14 @@
 #'
 #' @examples#
 #' data <- sample_data_roc()
-#' dta(data)
-dta <- function(data,
+#' study_dta(data)
+study_dta <- function(data,
                 contrast = define_contrast("raw"),
                 benchmark = 0.75, 
-                alpha = 0.025,
+                alpha = 0.025, 
                 alternative = c("greater", "two.sided", "less"), 
                 adjustment = c("none", "bonferroni", "maxt", "bootstrap", "mbeta"),
+                co_primary = TRUE, # TODO: implement
                 transformation = c("none", "logit"),
                 regu = FALSE,
                 pars = list(),
@@ -81,7 +84,7 @@ dta <- function(data,
   ## check 'pars' argument
   stopifnot(is.list(pars))
   
-  ## prepare arguments for specific dta_xyz function:
+  ## prepare arguments for specific study_dta_xyz function:
   args <-
     list(
       data = data,
@@ -95,7 +98,7 @@ dta <- function(data,
     )
   
   ## calculate & label result:
-  out <- do.call(paste0("dta_", match.arg(adjustment)), args)
+  out <- do.call(paste0("study_dta_", match.arg(adjustment)), args)
   names(out) <- names(data)
   class(out) <- append(class(out), "DTAmc_results")
   

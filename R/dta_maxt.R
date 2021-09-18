@@ -1,4 +1,4 @@
-dta_maxt <- function(data = sample_data(seed=1337),
+study_dta_maxt <- function(data = sample_data(seed=1337),
                      contrast = define_contrast("raw"),
                      benchmark = 0.5,
                      alpha = 0.05,
@@ -9,7 +9,7 @@ dta_maxt <- function(data = sample_data(seed=1337),
 ){
   
   stats <- data2stats(data, contrast=contrast, regu = regu)
-  R <- cov2cor(active_cov(stats))
+  R <- stats::cov2cor(active_cov(stats))
   cv <- cv_maxt(R, alpha, alternative)
   
   ## output
@@ -89,7 +89,7 @@ pval_maxt <- function(R){
              mvtnorm::pmvnorm(lower = rep(-Inf, m), upper = rep(x, m), corr=R)[1]))
   } 
 }
-# TODO: pval_maxt - correct pvals? NO, compare: dta(adj="maxt", regu=T)
+# TODO: pval_maxt - correct pvals? NO, compare: study_dta(adj="maxt", regu=T)
 
 alpha_maxt <- function(alpha, alternative, R){ 
   NA

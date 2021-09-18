@@ -5,7 +5,7 @@
 #' @param partition logical, should result be split into one matrix per class (TRUE; default) or not (FALSE)
 #' @param names integer (named), values give data values, names give class names
 #'
-#' @return
+#' @return data matrix with values 1 (correct prediction) and 0 (false prediction)
 #' @export
 #'
 #' @examples

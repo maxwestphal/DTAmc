@@ -1,5 +1,9 @@
 ## DTAmc 
 
+[![Codecov test coverage](https://codecov.io/gh/maxwestphal/DTAmc/branch/master/graph/badge.svg)](https://codecov.io/gh/maxwestphal/DTAmc?branch=master)
+
+## Overview
+
 DTAmc is an R package to perform statistical analysis for Diagnostic Test Accuracy
 (DTA) studies with co-primary endpoints sensitivity and specificity. 
 In particular, it allows for multiplicity corrections when the diagnostic accuracy of multiple index tests (or candidate prediction models) is investigated simultaneously. 

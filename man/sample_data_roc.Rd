@@ -43,10 +43,10 @@ sample_data_roc(
 \item{corrplot}{logical (default: FALSE), if TRUE do not return data but instead plot correlation
 matrices for final binary data}
 
-\item{...}{}
+\item{...}{further arguments (currently unused)}
 }
 \value{
-
+Generated binary dataset
 }
 \description{
 Sample binary data (ROC model)

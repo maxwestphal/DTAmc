@@ -12,9 +12,9 @@
 #' @param Rse matrix, correlation matrix for empirical sensitivities (m x m)
 #' @param Rsp matrix, correlation matrix for empirical specificities (m x m)
 #' @param modnames character, model names (length m)
-#' @param ... 
+#' @param ... further arguments (currently unused)
 #'
-#' @return
+#' @return Generated binary dataset
 #' @export
 #'
 #' @examples
@@ -56,13 +56,13 @@ sample_data_lfc <- function(n = 100,
   
   if(sum( b) > 0){
     comp0[,  b] <- sample_data_prob(n0, sp[ b], Rsp[ b,  b])
-    #comp1[,  b] <- matrix(rbinom(n1*sum( b), 1, L), ncol=sum( b))
-    comp1[,  b] <- sapply(se.alt[ b], function(p) rbinom(n1, 1, p))
+    #comp1[,  b] <- matrix(stats::rbinom(n1*sum( b), 1, L), ncol=sum( b))
+    comp1[,  b] <- sapply(se.alt[ b], function(p) stats::rbinom(n1, 1, p))
   }
   if(sum(!b) > 0){
     comp1[, !b] <- sample_data_prob(n1, se[!b], Rse[!b, !b])
-    #comp0[, !b] <- matrix(rbinom(n1*sum(!b), 1, L), ncol=sum(!b))
-    comp0[, !b] <- sapply(sp.alt[!b], function(p) rbinom(n0, 1, p))
+    #comp0[, !b] <- matrix(stats::rbinom(n1*sum(!b), 1, L), ncol=sum(!b))
+    comp0[, !b] <- sapply(sp.alt[!b], function(p) stats::rbinom(n0, 1, p))
   }
   
   if(! all(rbind(comp0, comp1) %in% 0:1)){stop("Something went wrong!!!")}

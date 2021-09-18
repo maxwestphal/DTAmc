@@ -43,10 +43,10 @@ sample_data_lfc(
 
 \item{modnames}{character, model names (length m)}
 
-\item{...}{}
+\item{...}{further arguments (currently unused)}
 }
 \value{
-
+Generated binary dataset
 }
 \description{
 Sample binary data (LFC model)

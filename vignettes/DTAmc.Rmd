@@ -34,31 +34,31 @@ NOTE: THIS DOCUMENT IS IN AN EARLY STATE. EXPECT SOME BUGS!
 
 ## Important functions
 
-### threshold()
+### categorize()
 Often, binary predictions are not readily available but rather need to be 
-derived from continuous (risk) scores. This can be done via the threshold
+derived from continuous (risk) scores. This can be done via the categorize
 function.
 
-```{r threshold1}
+```{r categorize1}
 # real data example from publication here
 set.seed(123)
 M <- as.data.frame(mvtnorm::rmvnorm(10, mean=rep(0, 3), sigma=2*diag(3)))
 M
 
-## threshold at 0 by default
-yhat <- threshold(M)
+## categorize at 0 by default
+yhat <- categorize(M)
 yhat
 
 ## define multiple cutpoints to define multiple decision rules per marker
 C <- c(0, 1, 0, 1, 0, 1)
 a <- c(1, 1, 2, 2, 3, 3)
-threshold(M, C, a)
+categorize(M, C, a)
 
 
 ## this can even be used to do multi-class classification, like this:
 C <- matrix(rep(c(-1, 0, 1, -2, 0, 2), 3), ncol=3, byrow = TRUE)
 C
-threshold(M, C, a)
+categorize(M, C, a)
 ```
 
 
@@ -83,10 +83,10 @@ compare(yhat, y)
 
 
 
-### dta()
+### study_dta()
 Main function of the package
 
-```{r dta1}
+```{r study_dta1}
 dta(compare(yhat, y))
 ```
 
@@ -117,7 +117,7 @@ correct (1) and false (0) predictions.
 
 ```{r workflow1}
 M %>%
-  threshold() %>%
+  categorize() %>%
   compare(y) %>%
   dta()
 ```
@@ -137,7 +137,7 @@ The R command
 gives an overview over the function arguments of the dta function.
 
 - comparator defines one of the classification rules under consideration to be the primary comparator
-- benchmark is a pre-defined accuracy threshold for each subgroup
+- benchmark is a pre-defined accuracy categorize for each subgroup
 
 Together this implies the hypotheses system that is considered, namely
 
