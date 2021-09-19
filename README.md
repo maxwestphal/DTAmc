@@ -1,7 +1,10 @@
 ## DTAmc 
 
+[![](https://www.r-pkg.org/badges/version/DTAmc?color=orange)](https://cran.r-project.org/package=DTAmc)
+[![](https://img.shields.io/badge/devel%20version-0.0.8.9003-blue.svg)](https://github.com/maxwestphal/DTAmc)
 [![R-CMD-check](https://github.com/maxwestphal/DTAmc/workflows/R-CMD-check/badge.svg)](https://github.com/maxwestphal/DTAmc/actions)
 [![Codecov test coverage](https://codecov.io/gh/maxwestphal/DTAmc/branch/master/graph/badge.svg)](https://codecov.io/gh/maxwestphal/DTAmc?branch=master)
+[![](https://img.shields.io/badge/preprint-@arXiv-gold.svg)](https://arxiv.org/abs/2105.13469)
 
 ## Overview
 
