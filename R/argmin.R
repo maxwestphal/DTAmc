@@ -23,7 +23,9 @@ argmax <- function(x, rdm=FALSE) {
 }
 
 pargmax <- function(..., args=list(), rdm=FALSE){
-  pargmin(..., args, rdm)
+  args <- c(list(...), args)
+  args <- lapply(args, function(x){-x})
+  pargmin(args=args, rdm=rdm)
 }
 
 

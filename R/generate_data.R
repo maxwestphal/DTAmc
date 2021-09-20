@@ -1,4 +1,4 @@
-#' Sample binary data
+#' Generate binary data
 #'
 #' @param n integer, overall sample size
 #' @param m integer, number of models
