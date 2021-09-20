@@ -1,4 +1,4 @@
-#' Sample binary data (LFC model)
+#' Generate binary data (LFC model)
 #'
 #' @param n integer, total sample size
 #' @param prev numeric, disease and healthy prevalence (adds up to 1)
@@ -21,17 +21,17 @@
 #' data <- generate_data_lfc()
 #' head(data)
 generate_data_lfc <- function(n = 100,
-                            prev = c(0.5, 0.5),
-                            random = FALSE,
-                            m = 10,
-                            se = 0.8,
-                            sp = 0.8,
-                            B = round(m/2),
-                            L = 1,
-                            Rse = diag(rep(1, m)),
-                            Rsp = diag(rep(1, m)),
-                            modnames = paste0("model", 1:m),
-                            ...
+                              prev = c(0.5, 0.5),
+                              random = FALSE,
+                              m = 10,
+                              se = 0.8,
+                              sp = 0.8,
+                              B = round(m/2),
+                              L = 1,
+                              Rse = diag(rep(1, m)),
+                              Rsp = diag(rep(1, m)),
+                              modnames = paste0("model", 1:m),
+                              ...
 )
 {
   ng <- sample_ng(n, prev, random)
@@ -56,12 +56,10 @@ generate_data_lfc <- function(n = 100,
   
   if(sum( b) > 0){
     comp0[,  b] <- generate_data_prob(n0, sp[ b], Rsp[ b,  b])
-    #comp1[,  b] <- matrix(stats::rbinom(n1*sum( b), 1, L), ncol=sum( b))
     comp1[,  b] <- sapply(se.alt[ b], function(p) stats::rbinom(n1, 1, p))
   }
   if(sum(!b) > 0){
     comp1[, !b] <- generate_data_prob(n1, se[!b], Rse[!b, !b])
-    #comp0[, !b] <- matrix(stats::rbinom(n1*sum(!b), 1, L), ncol=sum(!b))
     comp0[, !b] <- sapply(sp.alt[!b], function(p) stats::rbinom(n0, 1, p))
   }
   

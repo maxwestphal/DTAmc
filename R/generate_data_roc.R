@@ -1,4 +1,4 @@
-#' Sample binary data (ROC model)
+#' Generate binary data (ROC model)
 #'
 #' @param m integer, number of models
 #' @param auc numeric, vector of AUCs of biomarkers

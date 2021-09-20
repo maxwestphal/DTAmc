@@ -1,6 +1,6 @@
 Package: DTAmc
 Title: Diagnostic Test Accuracy studies with multiple comparisons
-Version: 0.0.8.9004
+Version: 0.0.8.9005
 Authors@R: 
     person(given = "Max",
            family = "Westphal",
