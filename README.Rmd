@@ -5,11 +5,8 @@ output: md_document
 
 # DTAmc: Diagnostic Test Accuracy Studies with Multiple Comparisons
 
-<<<<<<< HEAD
+
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-=======
-<a href="https://www.repostatus.org/#wip"><img src="https://www.repostatus.org/badges/latest/wip.svg" alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public." /></a>
->>>>>>> a5b52bef5114d53f852d88b42c5f2b80313a4c12
 `r badger::badge_devel(color="blue")`
 `r badger::badge_cran_release(color="orange")`
 [![R-CMD-check](https://github.com/maxwestphal/DTAmc/workflows/R-CMD-check/badge.svg)](https://github.com/maxwestphal/DTAmc/actions)
